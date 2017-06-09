@@ -61,7 +61,7 @@ public class HandlerDemo extends Activity {
                     bt.setEnabled(false);
                     tv.setText(R.string.waitting1);
 
-                    Thread t=new Thread1();
+                    Thread t = new Thread1();
                     t.setName("Thread1");
                     t.start();
                 }
@@ -75,7 +75,7 @@ public class HandlerDemo extends Activity {
                 //在子线程中启动HandlerThread的handleMessage方法
                 else if (bt.getText().equals("NEXT-2")) {
 
-                    Thread t=new Thread3();
+                    Thread t = new Thread3();
                     t.setName("Thread3");
                     t.start();
 
@@ -97,7 +97,7 @@ public class HandlerDemo extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 tv.setText(msg.obj.toString());
-                Log.d("HandlerDemo", Thread.currentThread().getName()+"收到消息---" + msg.obj);
+                Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息---" + msg.obj);
                 switch (msg.what) {
                     case 2: {
                         bt.setText("NEXT-1");
@@ -127,11 +127,7 @@ public class HandlerDemo extends Activity {
 
                 if (msg.what == 1) {
                     //模拟耗时操作一
-                    try {
-                        Thread.sleep(3000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
+                    doSomthing();
 
                 } else if (msg.what == 2) {
                     //模拟耗时操作二
@@ -146,11 +142,20 @@ public class HandlerDemo extends Activity {
                 message.obj = "threadHandler处理完毕，发送消息--" + msg.what;
                 mainHandler.sendMessage(message);
 
-                Log.d("HandlerDemo", Thread.currentThread().getName()+"收到消息--" + msg.what);
+                Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息--" + msg.what);
 
             }
         };
 
+    }
+
+    //模拟耗时操作
+    private void doSomthing() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -163,22 +168,14 @@ public class HandlerDemo extends Activity {
         @Override
         public void run() {
             //模拟耗时操作，然后用sendMessage方法向主线程发送消息   
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                Log.d("HandlerDemo", e.getMessage());
-            }
+            doSomthing();
             Message message = new Message();
-            message.obj = "Thread1处理完毕，发送消息......"+message.what;
+            message.obj = "Thread1处理完毕，发送消息......" + message.what;
             message.what = 1;
             mainHandler.sendMessage(message);
 
             //模拟耗时操作，然后用post方法直接更新UI  
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                Log.d("HandlerDemo", e.getMessage());
-            }
+            doSomthing();
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -203,7 +200,7 @@ public class HandlerDemo extends Activity {
             };
             //启用新的子线程（Thread2）以便传回消息
 
-            Thread t=new Thread2();
+            Thread t = new Thread2();
             t.setName("Thread2");
             t.start();
             Looper.loop();
@@ -220,15 +217,11 @@ public class HandlerDemo extends Activity {
         @Override
         public void run() {
             //模拟耗时操作,然后向子线程（Thread1）发送消息
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                Log.d("HandlerDemo", e.getMessage());
-            }
+            doSomthing();
             Log.d("HandlerDemo", Thread.currentThread().getName() + "发送消息......");
             Message message = new Message();
-            message.what=0;
-            message.obj = "Thread2处理完毕，发送消息......"+message.what;
+            message.what = 0;
+            message.obj = "Thread2处理完毕，发送消息......" + message.what;
             threadHandler1.sendMessage(message);
         }
 
@@ -243,11 +236,7 @@ public class HandlerDemo extends Activity {
         @Override
         public void run() {
             //模拟耗时操作,然后向子线程（handlerThread，类型为HandlerThread）发送消息
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                Log.d("HandlerDemo", e.getMessage());
-            }
+            doSomthing();
 
             //通过HandleThread定义新的子线程handlerThread
             handlerThread = new HandlerThread("handlerThread");
@@ -259,7 +248,7 @@ public class HandlerDemo extends Activity {
                     Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息--" + msg.what);
                     Message message = new Message();
                     message.what = 4;
-                    message.obj = "通过Thread3启动的handlerThread处理完毕，发送消息......"+msg.what;
+                    message.obj = "通过Thread3启动的handlerThread处理完毕，发送消息......" + msg.what;
                     mainHandler.sendMessage(message);
                 }
             };

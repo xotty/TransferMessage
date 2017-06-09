@@ -60,6 +60,15 @@ public class UIUpdateDemo extends Activity {
         };
     }
 
+    //模拟耗时操作
+    private void doSomthing() {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
      *更新UI方法一：Handler SendMessage
      */
@@ -68,12 +77,7 @@ public class UIUpdateDemo extends Activity {
 
         @Override
         public void run() {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                Log.d("UIUpdateDemo", e.getMessage());
-            }
-
+            doSomthing();
             Message message = new Message();
             message.obj = "Handler SendMessage Update UI->OK";
             message.what = 1;
@@ -91,13 +95,7 @@ public class UIUpdateDemo extends Activity {
 
         @Override
         public void run() {
-            try {
-                Thread.sleep(5000);
-            } catch (InterruptedException e) {
-                Log.d("UIUpdateDemo", e.getMessage());
-            }
-
-
+            doSomthing();
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
@@ -116,12 +114,7 @@ public class UIUpdateDemo extends Activity {
 
             @Override
             public void run() {
-                try {
-                    Thread.sleep(5000);
-                } catch (InterruptedException e) {
-                    Log.d("UIUpdateDemo", e.getMessage());
-                }
-
+                doSomthing();
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -140,11 +133,7 @@ public class UIUpdateDemo extends Activity {
 
                 @Override
                 public void run() {
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        Log.d("UIUpdateDemo", e.getMessage());
-                    }
+                    doSomthing();
                     tv.post(new Runnable() {
 
                         @Override
