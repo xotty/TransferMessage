@@ -54,7 +54,7 @@ public class UIUpdateDemo extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 tv.setText(msg.obj.toString());
-                Log.d("UIUpdateDemo", "SendMessage更新UI");
+                Log.d("UIUpdateDemo", "SendMessage更新UI" + msg.obj.toString());
                 new HandlerThread2().start();
             }
         };
@@ -83,7 +83,6 @@ public class UIUpdateDemo extends Activity {
             message.what = 1;
             mainHandler.sendMessage(message);
             Log.d("UIUpdateDemo", "HandlerThread1处理完毕，发送消息......");
-
         }
     }
 

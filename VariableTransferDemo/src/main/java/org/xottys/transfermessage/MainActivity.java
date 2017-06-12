@@ -1,4 +1,23 @@
-package org.xottys.variabletransferdemo;
+/**
+ * Description:Android类与类之间消息传递方式之"变量传递"的八种方法演示
+ * 1）公共成员变量传值
+ * 2）属性传值（setter／getter）
+ * 3）构造器传值
+ * 4）方法参数传值
+ * 5）静态变量传值
+ * 6）模拟全局变量传值（静态）
+ * 7）Application全局传值
+ * 8）单例传值
+ * <p>
+ * <br/>Copyright (C), 2017-2018, Steve Chang
+ * <br/>This program is protected by copyright laws.
+ * <br/>Program Name:Android UI Update DEMO
+ * <br/>Date:June，2017
+ *
+ * @author xottys@163.com
+ * @version 1.0
+ */
+package org.xottys.transfermessage;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -11,7 +30,8 @@ import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
-    public static String pString;
+    public static String pString;    //用于在UI中显示传递结果
+
     public static Handler mHandler;
     public static TextView tv;
     private static Button bt;
@@ -29,21 +49,18 @@ public class MainActivity extends Activity {
                 if (bt.getText().equals("START")) {
                     bt.setText("Running......");
                     bt.setEnabled(false);
-                    tv.setText(R.string.waitting);       //这个textView是用来演示更新的UI元素
+                    tv.setText(R.string.waitting);       //这个textView用来演示传递结果
                     new Thread() {
                         public void run() {
                             T1 t1 = new T1();
                             t1.m1();
                         }
-
                     }.start();
 
                 } else {
                     bt.setText("START");
                     tv.setText(R.string.hello);
                 }
-//t1.m2();
-                //T2 t2=new T2("");
             }
         });
 
@@ -53,13 +70,11 @@ public class MainActivity extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 tv.setText(msg.what + ")" + pString);
-                Log.d("HandlerDemo", "收到消息---" + msg.what);
-                if (msg.what == 5) {
+                Log.d("VariableTransferDemo", "收到传递值---" + msg.what + ")" + pString);
+                if (msg.what == 7) {
                     bt.setText("END");
                     bt.setEnabled(true);
                 }
-
-
             }
         };
     }
