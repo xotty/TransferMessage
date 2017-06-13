@@ -34,10 +34,6 @@ public class T1 {
         myApp.APP_PARA = "Application全局传值：T1->T2";
         Singleton.getInstance().S_VAR = "单例传值：T1->T2";
         t2.m2_3();
-
-
-
-
     }
 
 

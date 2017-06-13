@@ -5,21 +5,16 @@ package org.xottys.transfermessage;
  */
 
 public class Singleton {
-    String S_VAR;          //用来传递的变量
+    private static final Singleton myInstance = new Singleton();
+    String S_VAR;          //用来传递的变量;
 
-    //静态内部类方式构造单例
+    //构造单例
     private Singleton() {
     }
 
-    ;
-
     public static final Singleton getInstance() {
-
-        return SingletonHolder.INSTANCE;
+        return myInstance;
     }
 
-    private static class SingletonHolder {
-        private static final Singleton INSTANCE = new Singleton();  //创建实例的地方
-    }
 
 }

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">CBOTransferDemo</string>
+    <string name="hello">Hello, CBO Transfer Demo Ready!</string>
+    <string name="waitting">等待处理.....</string>
+</resources>
