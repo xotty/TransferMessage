@@ -2,6 +2,7 @@
  * Description:
  * Callback的两种主要用法演示 1）与Callback设置同步定义回调方法   2）单独定义回调方法
  * BroadcastReceiver的两种主要用法演示  1）内部类接收消息   2）自定义外部类接收消息
+ * Observer用法演示
  * <p>
  * <br/>Copyright (C), 2017-2018, Steve Chang
  * <br/>This program is protected by copyright laws.
@@ -25,11 +26,16 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import java.util.Observable;
+import java.util.Observer;
+
 public class MainActivity extends Activity implements CallbackInterface {
     private Button bt;
     private TextView tv;
     private CallbackClass mCallback;
     private MyBroadcastReceiver1 mRreceiver;
+    private MyObservable myObservable;
+    private MyObserver myObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,11 +49,14 @@ public class MainActivity extends Activity implements CallbackInterface {
 
         bt.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
+
                 if (bt.getText().equals("START")) {
+
                     bt.setText("Running......");
                     bt.setEnabled(false);
                     tv.setText(R.string.waitting);
 
+                    //Callback演示
                     mCallback = new CallbackClass();
                     mCallback.setCallbackInterface(new CallbackInterface() {
                         //方式一：具体实现回调方法
@@ -58,6 +67,7 @@ public class MainActivity extends Activity implements CallbackInterface {
                             //下面是具体处理程序......
                         }
                     });
+
                     //方式一：启动回调方法调用
                     mCallback.doSomthing();
 
@@ -70,7 +80,7 @@ public class MainActivity extends Activity implements CallbackInterface {
                     }, 3000);
 
                 }
-                //在主线程中启动HandlerThread的handleMessage方法
+                //BroadcastReceiver演示
                 else if (bt.getText().equals("NEXT-1")) {
 
                     Intent intent = new Intent();
@@ -80,19 +90,21 @@ public class MainActivity extends Activity implements CallbackInterface {
                     sendBroadcast(intent);              //发送广播，在Activity、Service中可直接使用，否则要加Context
 
                 }
-                //在子线程中启动HandlerThread的handleMessage方法
+                //Observer演示
                 else if (bt.getText().equals("NEXT-2")) {
 
-                    unregisterReceiver(mRreceiver);           //不用时及时解除广播注册
-//                    Thread t = new Thread3();
-//                    t.setName("Thread3");
-//                    t.start();
 
-
+                    myObservable.setData("第一次改变");
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            myObservable.setData("第二次改变");
+                        }
+                    }, 3000);
                 }
+
                 //演示结束，回到初始状态
                 else {
-
                     bt.setText("START");
                     tv.setText(R.string.hello);
                 }
@@ -100,6 +112,8 @@ public class MainActivity extends Activity implements CallbackInterface {
 
             }
         });
+
+
         //动态注册广播接收者（代码实现）
         mRreceiver = new MyBroadcastReceiver1();
 
@@ -111,8 +125,24 @@ public class MainActivity extends Activity implements CallbackInterface {
 
         registerReceiver(mRreceiver, filter);
 
+
+        //观察者模式启动准备
+        myObservable = new MyObservable();
+        myObserver = new MyObserver();
+        myObservable.addObserver(myObserver);     //添加观察者
+
     }
 
+    @Override
+    protected void onDestroy()
+
+    {
+        super.onDestroy();
+
+        unregisterReceiver(mRreceiver);           //及时解除广播注册
+        myObservable.deleteObserver(myObserver);  //及时解除观察者注册
+
+    }
     //方式二：具体实现回调方法
     @Override
     public void callbackMethod(String str) {
@@ -150,10 +180,22 @@ public class MainActivity extends Activity implements CallbackInterface {
                     }
                 }, 3000);
             } else {
-                bt.setText("END");
+                bt.setText("NEXT-2");
                 bt.setEnabled(true);
             }
 
+        }
+    }
+
+    //在被观察的数据发生变化时update()方法会被自动调用
+    class MyObserver implements Observer {
+        @Override
+        public void update(Observable observable, Object obj) {
+            String msg = (String) obj;
+            Log.d("CBOTransferDemo", "MyObserver发现变化-->" + msg);
+            tv.setText("MyObserver发现变化-->" + msg);
+            bt.setText("END");
+            bt.setEnabled(true);
         }
     }
 
