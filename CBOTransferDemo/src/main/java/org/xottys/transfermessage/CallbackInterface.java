@@ -1,7 +1,7 @@
 package org.xottys.transfermessage;
 
 /**
- * Created by changqing on 2017/6/12.
+ * 接口中定义统一的回调方法，以便共同遵循和使用
  */
 
 public interface CallbackInterface {

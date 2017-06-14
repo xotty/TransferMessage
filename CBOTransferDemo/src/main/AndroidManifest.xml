@@ -16,6 +16,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver
+            android:name="org.xottys.transfermessage.MyBroadcastReceiver2"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="MyReceiver_2" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>
