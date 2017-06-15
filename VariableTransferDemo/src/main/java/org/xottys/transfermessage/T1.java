@@ -4,7 +4,7 @@ package org.xottys.transfermessage;
  * 此类负责构造和传递数据
  */
 
-public class T1 {
+class T1 {
 
     public static String static_para;
 

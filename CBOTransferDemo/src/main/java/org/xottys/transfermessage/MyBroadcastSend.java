@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 
 /**
- * Created by changqing on 2017/6/13.
+ * 自定义独立广播发送类
  */
 
-public class MyBroadcastSend {
-    private Context context;    //广播发送方法一定要用Context来调用，如果该广播作用域是全应用的就用ApplicationContext
+class MyBroadcastSend {
+    private final Context context;    //广播发送方法一定要用Context来调用，如果该广播作用域是全应用的就用ApplicationContext
 
     public MyBroadcastSend(Context context) {
         this.context = context;

@@ -33,8 +33,8 @@ public class MainActivity extends Activity {
     public static String pString;    //用于在UI中显示传递结果
 
     public static Handler mHandler;
-    public static TextView tv;
-    private static Button bt;
+    private TextView tv;
+    private Button bt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,7 +49,7 @@ public class MainActivity extends Activity {
                 if (bt.getText().equals("START")) {
                     bt.setText("Running......");
                     bt.setEnabled(false);
-                    tv.setText(R.string.waitting);       //这个textView用来演示传递结果
+
                     new Thread() {
                         public void run() {
                             T1 t1 = new T1();
@@ -69,7 +69,11 @@ public class MainActivity extends Activity {
         {
             @Override
             public void handleMessage(Message msg) {
-                tv.setText(msg.what + ")" + pString);
+                if (msg.what == 1)
+                    tv.setText(msg.what + ")" + pString + "\n");
+                else
+                    tv.append(msg.what + ")" + pString + "\n");
+
                 Log.d("VariableTransferDemo", "收到传递值---" + msg.what + ")" + pString);
                 if (msg.what == 7) {
                     bt.setText("END");

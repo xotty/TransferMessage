@@ -39,7 +39,9 @@ import android.widget.TextView;
 public class HandlerDemo extends Activity {
 
 
-    private Handler mainHandler, threadHandler1, threadHandler2;
+    private static Handler mainHandler;
+    private static Handler threadHandler1;
+    private static Handler threadHandler2;
     private HandlerThread handlerThread;
     private Button bt;
     private TextView tv;
@@ -59,22 +61,26 @@ public class HandlerDemo extends Activity {
                 if (bt.getText().equals("START")) {
                     bt.setText("Running......");
                     bt.setEnabled(false);
-                    tv.setText(R.string.waitting1);
+                    tv.setText(R.string.waitting);
 
                     Thread t = new Thread1();
                     t.setName("Thread1");
                     t.start();
                 }
+
                 //在主线程中启动HandlerThread的handleMessage方法
                 else if (bt.getText().equals("NEXT-1")) {
+                    bt.setText("Running......");
+                    bt.setEnabled(false);
+                    threadHandler2.sendEmptyMessage(1);    //模拟第一件耗时操作
 
-                    threadHandler2.sendEmptyMessage(1);    //模拟做第一件耗时操作
-
-                    threadHandler2.sendEmptyMessage(2);    //模拟做第二件耗时操作
+                    threadHandler2.sendEmptyMessage(2);    //模拟第二件耗时操作
                 }
+
                 //在子线程中启动HandlerThread的handleMessage方法
                 else if (bt.getText().equals("NEXT-2")) {
-
+                    bt.setText("Running......");
+                    bt.setEnabled(false);
                     Thread t = new Thread3();
                     t.setName("Thread3");
                     t.start();
@@ -83,7 +89,7 @@ public class HandlerDemo extends Activity {
                 }
                 //演示结束，回到初始状态
                 else {
-                    handlerThread.quit();
+
                     bt.setText("START");
                     tv.setText(R.string.hello);
                 }
@@ -96,7 +102,11 @@ public class HandlerDemo extends Activity {
         {
             @Override
             public void handleMessage(Message msg) {
-                tv.setText(msg.obj.toString());
+                if (msg.what == 1)
+                    tv.setText(msg.obj.toString());
+                else
+                    tv.append(msg.obj.toString());
+
                 Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息---" + msg.obj);
                 switch (msg.what) {
                     case 2: {
@@ -124,10 +134,12 @@ public class HandlerDemo extends Activity {
         threadHandler2 = new Handler(handlerThread.getLooper()) {
             @Override
             public void handleMessage(Message msg) {
+                Message message = new Message();
 
                 if (msg.what == 1) {
                     //模拟耗时操作一
                     doSomthing();
+                    message.what = 0;
 
                 } else if (msg.what == 2) {
                     //模拟耗时操作二
@@ -136,10 +148,10 @@ public class HandlerDemo extends Activity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+                    message.what = 3;
                 }
-                Message message = new Message();
-                message.what = 3;
-                message.obj = "threadHandler处理完毕，发送消息--" + msg.what;
+
+                message.obj = "3." + msg.what + ")通过主线程启动的handlerThread处理完毕，发送消息--" + msg.what + "\n";
                 mainHandler.sendMessage(message);
 
                 Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息--" + msg.what);
@@ -163,14 +175,14 @@ public class HandlerDemo extends Activity {
     *2）使用Handler Post直接更新UI
     *3）启动新的子线程（Thread2），接收其用Handler返回的消息，进一步传给主线程以更新UI
      */
-    class Thread1 extends Thread {
+    private class Thread1 extends Thread {
 
         @Override
         public void run() {
             //模拟耗时操作，然后用sendMessage方法向主线程发送消息   
             doSomthing();
             Message message = new Message();
-            message.obj = "Thread1处理完毕，发送消息......" + message.what;
+            message.obj = "1.1)Thread1处理完毕，发送消息......" + message.what + "\n";
             message.what = 1;
             mainHandler.sendMessage(message);
 
@@ -179,7 +191,7 @@ public class HandlerDemo extends Activity {
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    tv.setText(R.string.waitting2);
+                    tv.append("1.2)Thread1处理完毕，post直接处理UI" + "\n\n");
                     Log.d("HandlerDemo", "Thread1处理完毕，post直接处理UI");
                 }
             });
@@ -192,7 +204,7 @@ public class HandlerDemo extends Activity {
                     Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息---" + msg.obj.toString());
                     Message message = new Message();
                     message.what = 2;
-                    message.obj = msg.obj;
+                    message.obj = msg.obj + "\n";
 
                     //将收到的消息发送给主线程以便更新UI
                     mainHandler.sendMessage(message);
@@ -206,14 +218,13 @@ public class HandlerDemo extends Activity {
             Looper.loop();
         }
 
-        ;
 
     }
 
     /*
     *子线程向子线程发送消息
      */
-    class Thread2 extends Thread {
+    private class Thread2 extends Thread {
         @Override
         public void run() {
             //模拟耗时操作,然后向子线程（Thread1）发送消息
@@ -221,17 +232,16 @@ public class HandlerDemo extends Activity {
             Log.d("HandlerDemo", Thread.currentThread().getName() + "发送消息......");
             Message message = new Message();
             message.what = 0;
-            message.obj = "Thread2处理完毕，发送消息......" + message.what;
+            message.obj = "2)Thread2处理完毕，发送消息......" + message.what + "\n";
             threadHandler1.sendMessage(message);
         }
 
-        ;
     }
 
     /*
  *使用HandlerThread 向子线程发送消息
   */
-    class Thread3 extends Thread {
+    private class Thread3 extends Thread {
 
         @Override
         public void run() {
@@ -241,23 +251,22 @@ public class HandlerDemo extends Activity {
             //通过HandleThread定义新的子线程handlerThread
             handlerThread = new HandlerThread("handlerThread");
             handlerThread.start();
-            //定义子线程Handler（ threadHandler2）
-            threadHandler2 = new Handler(handlerThread.getLooper()) {
+            //定义子线程Handler（ threadHandler3）
+            Handler threadHandler3 = new Handler(handlerThread.getLooper()) {
                 @Override
                 public void handleMessage(Message msg) {
                     Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息--" + msg.what);
                     Message message = new Message();
                     message.what = 4;
-                    message.obj = "通过Thread3启动的handlerThread处理完毕，发送消息......" + msg.what;
+                    message.obj = "\n4)通过Thread3启动的handlerThread处理完毕，收到消息......" + msg.what + "\n";
                     mainHandler.sendMessage(message);
                 }
             };
 
             //向子线程（handlerThread）发送消息
-            threadHandler2.sendEmptyMessage(0);
+            threadHandler3.sendEmptyMessage(0);
         }
 
-        ;
     }
 }
 

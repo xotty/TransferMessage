@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	xmlns:tools="http://schemas.android.com/tools"
 	android:id="@+id/txvv"
 	android:layout_width="fill_parent"
 	android:layout_height="fill_parent"
+	android:background="#FFFFFFFF"
 	android:orientation="vertical"
-	android:background="#FFFFFF"
 	android:weightSum="1">
-	<!-- 定义一个ImageView组件 -->
+
 	<Button
 		android:id="@+id/bt"
 		android:layout_width="150dp"
@@ -15,15 +14,15 @@
 		android:layout_marginLeft="130dp"
 		android:layout_marginTop="50dp"
 		android:gravity="center_horizontal"
-		android:textAllCaps="false"
 		android:text="START"
+		android:textAllCaps="false"
 		android:textSize="24sp"
 		android:visibility="visible" />
 
 	<TextView
 		android:id="@+id/tv"
 		android:layout_width="380dp"
-		android:layout_height="50dp"
+		android:layout_height="wrap_content"
 		android:layout_marginLeft="20dp"
 		android:layout_marginTop="50dp"
 		android:text="@string/hello"

@@ -12,7 +12,7 @@ public class Singleton {
     private Singleton() {
     }
 
-    public static final Singleton getInstance() {
+    public static Singleton getInstance() {
         return myInstance;
     }
 

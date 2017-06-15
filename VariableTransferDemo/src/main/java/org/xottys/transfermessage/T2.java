@@ -4,8 +4,10 @@ package org.xottys.transfermessage;
  * 此类负责接收数据，然后传递给UI线程
  */
 
-public class T2 {
+@SuppressWarnings("ALL")
+class T2 {
     public String para2;
+    @SuppressWarnings("CanBeFinal")
     private String p;
     private String p2;
 
@@ -33,7 +35,7 @@ public class T2 {
         waitAmoment();
 
         //属性传值（setter／getter）
-        MainActivity.pString = p2;
+        MainActivity.pString = getP2();
         MainActivity.mHandler.sendEmptyMessage(2);
 
         waitAmoment();

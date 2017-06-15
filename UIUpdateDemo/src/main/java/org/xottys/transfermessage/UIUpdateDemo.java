@@ -23,7 +23,7 @@ import android.widget.TextView;
 public class UIUpdateDemo extends Activity {
 
 
-    public Handler mainHandler;
+    private static Handler mainHandler;
     private Button bt;
     private TextView tv;
 
@@ -72,14 +72,14 @@ public class UIUpdateDemo extends Activity {
     /*
      *更新UI方法一：Handler SendMessage
      */
-    class HandlerThread1 extends Thread {
+    private class HandlerThread1 extends Thread {
 
 
         @Override
         public void run() {
             doSomthing();
             Message message = new Message();
-            message.obj = "Handler SendMessage Update UI->OK";
+            message.obj = "1)Handler SendMessage Update UI->OK\n\n";
             message.what = 1;
             mainHandler.sendMessage(message);
             Log.d("UIUpdateDemo", "HandlerThread1处理完毕，发送消息......");
@@ -98,13 +98,13 @@ public class UIUpdateDemo extends Activity {
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
-                    tv.setText("Handler POST Update UI->OK");
+                    tv.append("2)Handler POST Update UI->OK" + "\n\n");
                     Log.d("UIUpdateDemo", "HandlerThread2处理完毕，post直接更新UI");
 
                     new UIThread().start();
                 }
             });
-        };
+        }
 
         /*
          *更新UI方法三：runOnUiThread
@@ -117,13 +117,13 @@ public class UIUpdateDemo extends Activity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        tv.setText("runOnUiThread Update UI->OK");
+                        tv.append("3)runOnUiThread Update UI->OK" + "\n\n");
                         Log.d("UIUpdateDemo", "UIThread处理完毕，更新UI");
 
                         new ViewPostThread().start();
                     }
                 });
-            };
+            }
 
             /*
              *更新UI方法四：View.Post
@@ -137,13 +137,13 @@ public class UIUpdateDemo extends Activity {
 
                         @Override
                         public void run() {
-                            tv.setText("ViewPost Update UI->OK");
+                            tv.append("4)ViewPost Update UI->OK");
                             bt.setText("END");
                             bt.setEnabled(true);
                             Log.d("UIUpdateDemo", "ViewPostThread处理完毕，更新UI");
                         }
                     });
-                };
+                }
             }
         }
     }

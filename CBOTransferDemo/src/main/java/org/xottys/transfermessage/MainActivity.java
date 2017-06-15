@@ -150,6 +150,7 @@ public class MainActivity extends Activity implements CallbackInterface {
         myObservable.deleteObserver(myObserver);  //及时解除观察者注册
 
     }
+
     //方式二：具体实现回调方法
     @Override
     public void callbackMethod(String str) {
@@ -189,7 +190,7 @@ public class MainActivity extends Activity implements CallbackInterface {
     }
 
     //在被观察的数据发生变化时update()方法会被自动调用
-    class MyObserver implements Observer {
+    private class MyObserver implements Observer {
         @Override
         public void update(Observable observable, Object obj) {
             String msg = (String) obj;
