@@ -16,9 +16,9 @@
         <!-- 定义一个ImageView组件 -->
         <Button
             android:id="@+id/bt"
-            android:layout_width="150dp"
+            android:layout_width="220dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="130dp"
+            android:layout_marginLeft="80dp"
             android:layout_marginTop="50dp"
             android:gravity="center_horizontal"
             android:text="START"
@@ -29,9 +29,9 @@
         <TextView
             android:id="@+id/tv"
             android:layout_width="380dp"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginTop="25dp"
             android:text="@string/hello"
             android:textColor="#000000"
             android:textSize="20sp" />

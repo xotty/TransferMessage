@@ -52,9 +52,9 @@ public class MainActivity extends Activity implements CallbackInterface {
 
                 if (bt.getText().equals("START")) {
 
-                    bt.setText("Running......");
+                    bt.setText("Running......回调");
                     bt.setEnabled(false);
-                    tv.setText(R.string.waitting);
+                    tv.setText("           一、回调（CallBack）演示\n\n");
 
                     //Callback演示
                     mCallback = new CallbackClass();
@@ -62,8 +62,9 @@ public class MainActivity extends Activity implements CallbackInterface {
                         //方式一：具体实现回调方法
                         @Override
                         public void callbackMethod(String str) {
+
                             System.out.println("方式一，与Callback设置同步定义回调方法，收到的数据为-->" + str);
-                            tv.setText("方式一，同步定义回调方法，收到数据:\n" + str);
+                            tv.append("方式一，同步定义回调方法，收到数据:\n" + str + "\n");
                             //下面是具体处理程序......
                         }
                     });
@@ -82,7 +83,10 @@ public class MainActivity extends Activity implements CallbackInterface {
                 }
                 //BroadcastReceiver演示
                 else if (bt.getText().equals("NEXT-1")) {
+                    bt.setText("Running......广播");
+                    bt.setEnabled(false);
 
+                    tv.append("    二、广播（BroadcastReceiver）演示\n\n");
                     Intent intent = new Intent();
                     intent.setAction("MyReceiver_1");   //设置接受者匹配的Action
                     intent.putExtra("FROM", "Inside");  //封装要发送的消息1
@@ -92,8 +96,10 @@ public class MainActivity extends Activity implements CallbackInterface {
                 }
                 //Observer演示
                 else if (bt.getText().equals("NEXT-2")) {
+                    bt.setText("Running......观察者");
+                    bt.setEnabled(false);
 
-
+                    tv.append("         三、观察者（Observer）演示\n\n");
                     myObservable.setData("第一次改变");
                     new Handler().postDelayed(new Runnable() {
                         @Override
@@ -106,6 +112,7 @@ public class MainActivity extends Activity implements CallbackInterface {
                 //演示结束，回到初始状态
                 else {
                     bt.setText("START");
+
                     tv.setText(R.string.hello);
                 }
 
@@ -147,20 +154,13 @@ public class MainActivity extends Activity implements CallbackInterface {
     @Override
     public void callbackMethod(String str) {
         System.out.println("方式二，回调方法开始处理，收到的数据为-->" + str);
-        tv.setText("方式二，单独定义回调方法，收到数据:\n" + str);
+        tv.append("方式二，单独定义回调方法，收到数据:\n" + str + "\n");
+        tv.append(getResources().getString(R.string.mline) + "\n");
         bt.setText("NEXT-1");
         bt.setEnabled(true);
         //下面是具体处理程序......
     }
 
-    //延时3s
-    private void waitAmoment() {
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
 
     //内部类方式定义广播接收者，此时若用静态注册时（XML中注册），该内部类必须是static的
     class MyBroadcastReceiver1 extends BroadcastReceiver {
@@ -168,7 +168,7 @@ public class MainActivity extends Activity implements CallbackInterface {
         public void onReceive(Context context, Intent intent) {
             String from = intent.getStringExtra("FROM");    //解析收到的消息1
             String msg = intent.getStringExtra("MSG");      //解析收到的消息2
-            tv.setText(from + "：" + msg);
+            tv.append(from + "：" + msg + "\n");
             Log.d("CBOTransferDemo", "MyBroadcastReceiver1收到-->" + from + "：" + msg);
 
             if (from.equals("Inside")) {
@@ -180,6 +180,7 @@ public class MainActivity extends Activity implements CallbackInterface {
                     }
                 }, 3000);
             } else {
+                tv.append(getResources().getString(R.string.mline) + "\n");
                 bt.setText("NEXT-2");
                 bt.setEnabled(true);
             }
@@ -193,10 +194,11 @@ public class MainActivity extends Activity implements CallbackInterface {
         public void update(Observable observable, Object obj) {
             String msg = (String) obj;
             Log.d("CBOTransferDemo", "MyObserver发现变化-->" + msg);
-            tv.setText("MyObserver发现变化-->" + msg);
-            bt.setText("END");
-            bt.setEnabled(true);
+            tv.append("MyObserver发现变化-->" + msg + "\n");
+            if (msg.equals("第二次改变")) {
+                bt.setText("END");
+                bt.setEnabled(true);
+            }
         }
     }
-
 }
