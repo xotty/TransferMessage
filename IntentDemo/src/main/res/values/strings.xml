@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Intent Demo</string>
+    <string name="hello">Hello, Intent Demo Ready!</string>
+    <string name="waitting">等待处理.....</string>
+</resources>

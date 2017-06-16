@@ -235,7 +235,6 @@ public class HandlerDemo extends Activity {
             message.obj = "2)Thread2处理完毕，发送消息......" + message.what + "\n";
             threadHandler1.sendMessage(message);
         }
-
     }
 
     /*
