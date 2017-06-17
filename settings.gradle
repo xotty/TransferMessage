@@ -1,1 +1,1 @@
-include ':app', ':HandlerDemo', ':UIUpdateDemo', ':VariableTransferDemo', ':CBOTransferDemo'
+include ':app', ':HandlerDemo', ':UIUpdateDemo', ':VariableTransferDemo', ':CBOTransferDemo', ':IntentDemo'
