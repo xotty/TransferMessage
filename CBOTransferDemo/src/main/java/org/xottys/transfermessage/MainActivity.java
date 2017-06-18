@@ -69,6 +69,7 @@ public class MainActivity extends Activity implements CallbackInterface {
                         }
                     });
 
+
                     //方式一：启动回调方法调用
                     mCallback.doSomthing();
 
@@ -115,8 +116,6 @@ public class MainActivity extends Activity implements CallbackInterface {
 
                     tv.setText(R.string.hello);
                 }
-
-
             }
         });
 

@@ -11,6 +11,7 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -18,18 +19,22 @@
         <activity android:name=".MyActivity2">
             <intent-filter>
                 <action android:name="MyActivity" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
         <service
-            android:name=".MyService"
+            android:name=".MyStartService"
             android:enabled="true"
             android:exported="true" />
         <service
             android:name=".MyIntentService"
             android:exported="false" />
-
+        <service
+            android:name=".MyBindService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

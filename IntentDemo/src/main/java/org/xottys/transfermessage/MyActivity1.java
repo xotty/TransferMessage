@@ -9,6 +9,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 
+/**
+ * 显式启动的Activity，无返回数据
+ */
 public class MyActivity1 extends Activity {
     private Button bt1, bt2;
     private TextView tv;
@@ -37,16 +40,15 @@ public class MyActivity1 extends Activity {
 
         bt2.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                //第二种：利用Bundle设置数据方法
+                //第二种数据设置方法：利用Bundle设置数据
                 Bundle bundle = new Bundle();
                 bundle.putString("name", "李四");
                 bundle.putFloat("score", 82.5f);
-
+                //隐式启动MyActivity2且需要返回结果
                 Intent intent = new Intent();
                 intent.putExtras(bundle);
                 intent.setAction("MyActivity");   //隐式启动
                 Log.d("IntentDemo", "MyActivity1准备隐式启动MyActivity2");
-
                 startActivityForResult(intent, 0);//启动新Activity，要求返回结果
             }
         });

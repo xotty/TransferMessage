@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+/**
+ * 隐式启动的Activity，有返回数据
+ */
 public class MyActivity2 extends Activity {
     private Button bt1, bt2;
     private TextView tv;
@@ -38,16 +41,19 @@ public class MyActivity2 extends Activity {
                 intent.setAction("MyActivity");
                 intent.putExtra("name", "王五");
                 intent.putExtra("score", 70.5f);
+                //返回数据封装完成
                 setResult(1, intent);
+
                 Log.d("IntentDemo", "MyActivity2准备返回MyActivity1");
 
                 finish();            //结束当前Activity，返回上一级
             }
         });
+
         bt2.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-                //直接返回MainActivity
+                //越级直接返回MainActivity
                 Intent intent = new Intent(MyActivity2.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
