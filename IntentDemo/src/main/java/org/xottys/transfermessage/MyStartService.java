@@ -49,6 +49,7 @@ public class MyStartService extends Service {
         mIntent.putExtra("GDP", 2.45f);
         startService(mIntent);
         MyIntentService.startActionBaz(MyStartService.this, "天津", 1.78f);
-        return super.onStartCommand(intent, flags, startId);
+
+        return START_NOT_STICKY;
     }
 }

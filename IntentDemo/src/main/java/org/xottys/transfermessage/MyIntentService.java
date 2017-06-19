@@ -11,7 +11,7 @@ import android.util.Log;
 public class MyIntentService extends IntentService {
     private static final String ACTION_FOO = "org.xottys.transfermessage.action.FOO";
     private static final String ACTION_BAZ = "org.xottys.transfermessage.action.BAZ";
-    // TODO: Rename parameters
+
     private static final String EXTRA_PARAM1 = "org.xottys.transfermessage.extra.PARAM1";
     private static final String EXTRA_PARAM2 = "org.xottys.transfermessage.extra.PARAM2";
     final private String TAG = "IntentDemo";

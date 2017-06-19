@@ -85,7 +85,7 @@ public class MainActivity extends Activity {
                 intent.putExtra("name", "张三");
                 intent.putExtra("score", 95.5f);
 
-                //启动新Activity，不要求返回结果
+                //启动MyActivity1，不要求返回结果
                 startActivity(intent);
 
             }
@@ -101,11 +101,13 @@ public class MainActivity extends Activity {
                     bt2.setText("Stop Service");
                     intent.putExtra("city", "上海");
                     intent.putExtra("GDP", 2.67f);
-                    startService(intent);             //启动Service。该方法不能获取Service返回数据
+                    //启动Service，该方法不能获取Service返回数据
+                    startService(intent);
                     tv.setText("MyService启动,详情请查看终端Log输出。");
                 } else {
                     bt2.setText("Start Service");
-                    stopService(intent);              //停止Service
+                    //停止Service
+                    stopService(intent);
                     tv.setText("MyService终止！");
                 }
             }
