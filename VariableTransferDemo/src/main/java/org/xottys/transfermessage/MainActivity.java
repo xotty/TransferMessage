@@ -74,7 +74,7 @@ public class MainActivity extends Activity {
                 else
                     tv.append(msg.what + ")" + pString + "\n");
 
-                Log.d("VariableTransferDemo", "收到传递值---" + msg.what + ")" + pString);
+                Log.i("VariableTransferDemo", "收到传递值---" + msg.what + ")" + pString);
                 if (msg.what == 7) {
                     bt.setText("END");
                     bt.setEnabled(true);

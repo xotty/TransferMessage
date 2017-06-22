@@ -28,7 +28,7 @@ public class MyBindService extends Service {
 
         city = intent.getStringExtra("city");
         GDP = intent.getFloatExtra("GDP", -1f);
-        Log.d(TAG, "{" + Thread.currentThread().getName() + "} MyBindService Binded! City:" + city + "  GDP:" + GDP);
+        Log.i(TAG, "{" + Thread.currentThread().getName() + "} MyBindService Binded! City:" + city + "  GDP:" + GDP);
 
         return myBinder;
     }
@@ -37,7 +37,7 @@ public class MyBindService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "MyBindService is Created");
+        Log.i(TAG, "MyBindService is Created");
         // 启动一条线程、动态地修改count状态值
         new Thread() {
             @Override
@@ -56,7 +56,7 @@ public class MyBindService extends Service {
     //Service被断开连接时回调该方法，通常是调用该Service的Activity退出时或unbindService()被显式调用时
     @Override
     public boolean onUnbind(Intent intent) {
-        Log.d(TAG, "MyBindService is Unbinded");
+        Log.i(TAG, "MyBindService is Unbinded");
 
         return true;   //onRebind()被调用的前提条件
     }
@@ -64,7 +64,7 @@ public class MyBindService extends Service {
     //如果服务一直在后台，调用bindService()时，onBind不会被调用而是调用onRebind()方法
     @Override
     public void onRebind(Intent intent) {
-        Log.d(TAG, "MyBindService is Rebinded");
+        Log.i(TAG, "MyBindService is Rebinded");
 
     }
 
@@ -73,7 +73,7 @@ public class MyBindService extends Service {
     public void onDestroy() {
         super.onDestroy();
         this.quit = true;
-        Log.d(TAG, "MyBindService is Destroyed");
+        Log.i(TAG, "MyBindService is Destroyed");
     }
 
     // Service 要完成的任务通常放在这里
@@ -100,7 +100,7 @@ public class MyBindService extends Service {
         }
 
         public void doSomething() {
-            Log.d(TAG, "MyBindService的数据通常在这里设置 City:" + city + "  GDP:" + GDP);
+            Log.i(TAG, "MyBindService的数据通常在这里设置 City:" + city + "  GDP:" + GDP);
 
             //模拟修改数据
             city = "深圳";

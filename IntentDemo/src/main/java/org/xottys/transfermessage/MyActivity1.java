@@ -30,7 +30,7 @@ public class MyActivity1 extends Activity {
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         float score = intent.getFloatExtra("score", -1f);
-        Log.d("IntentDemo", "MyActivity1已启动，接收数据：" + name + ":" + score);
+        Log.i("IntentDemo", "MyActivity1已启动，接收数据：" + name + ":" + score);
         tv.setText("MainActivity---->MyActivity1\n\n" + "传入数据-->" + name + ":" + score);
         bt1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -48,7 +48,7 @@ public class MyActivity1 extends Activity {
                 Intent intent = new Intent();
                 intent.putExtras(bundle);
                 intent.setAction("MyActivity");   //隐式启动
-                Log.d("IntentDemo", "MyActivity1准备隐式启动MyActivity2");
+                Log.i("IntentDemo", "MyActivity1准备隐式启动MyActivity2");
                 startActivityForResult(intent, 0);//启动新Activity，要求返回结果
             }
         });
@@ -60,7 +60,7 @@ public class MyActivity1 extends Activity {
         String name = data.getStringExtra("name");
         float score = data.getFloatExtra("score", -1f);
         tv.setText("MyActivity2---->MyActivity1" + "\n\n" + "返回数据-->" + name + ":" + score);
-        Log.d("IntentDemo", "MyActivity1收到MyActivity2返回的结果：" + name + ":" + score);
+        Log.i("IntentDemo", "MyActivity1收到MyActivity2返回的结果：" + name + ":" + score);
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

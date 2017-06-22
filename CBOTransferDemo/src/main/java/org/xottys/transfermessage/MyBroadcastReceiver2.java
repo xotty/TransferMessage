@@ -14,6 +14,6 @@ public class MyBroadcastReceiver2 extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         String msg = intent.getStringExtra("MSG");  //解析收到的消息
-        Log.d("CBOTransferDemo", "MyBroadcastReceiver2收到-->" + msg);
+        Log.i("CBOTransferDemo", "MyBroadcastReceiver2收到-->" + msg);
     }
 }

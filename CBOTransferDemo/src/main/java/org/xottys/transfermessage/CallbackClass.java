@@ -20,13 +20,13 @@ class CallbackClass {
     //该方法完成一系列任务，其中回调方法在需要的时候被调用，并传值出去，以便其它程序使用和处理
     public void doSomthing() {
 
-        Log.d("CBOTransferDemo", "调用回调方法....");
+        Log.i("CBOTransferDemo", "调用回调方法....");
         this.mCallbackInterface.callbackMethod("方法一：先设置CallBack再调用回调方法");
     }
 
     //方式2 直接把回调接口对象当参数传入,然后用该接口对象调用回调方法
     public void doSomthing(CallbackInterface mCallbackInterface) {
-        Log.d("CBOTransferDemo", "调用回调方法....");
+        Log.i("CBOTransferDemo", "调用回调方法....");
         Intent intent = new Intent();
         intent.setAction("MyReceiver_1");
         intent.putExtra("MSG", "方式一：通过动态注册广播和内部广播接收类收发消息");

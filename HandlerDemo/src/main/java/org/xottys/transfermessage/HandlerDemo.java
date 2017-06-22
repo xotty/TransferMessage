@@ -107,7 +107,7 @@ public class HandlerDemo extends Activity {
                 else
                     tv.append(msg.obj.toString());
 
-                Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息---" + msg.obj);
+                Log.i("HandlerDemo", Thread.currentThread().getName() + "收到消息---" + msg.obj);
                 switch (msg.what) {
                     case 2: {
                         bt.setText("NEXT-1");
@@ -154,7 +154,7 @@ public class HandlerDemo extends Activity {
                 message.obj = "3." + msg.what + ")通过主线程启动的handlerThread处理完毕，发送消息--" + msg.what + "\n";
                 mainHandler.sendMessage(message);
 
-                Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息--" + msg.what);
+                Log.i("HandlerDemo", Thread.currentThread().getName() + "收到消息--" + msg.what);
 
             }
         };
@@ -192,7 +192,7 @@ public class HandlerDemo extends Activity {
                 @Override
                 public void run() {
                     tv.append("1.2)Thread1处理完毕，post直接处理UI" + "\n\n");
-                    Log.d("HandlerDemo", "Thread1处理完毕，post直接处理UI");
+                    Log.i("HandlerDemo", "Thread1处理完毕，post直接处理UI");
                 }
             });
 
@@ -201,7 +201,7 @@ public class HandlerDemo extends Activity {
             threadHandler1 = new Handler() {
                 @Override
                 public void handleMessage(Message msg) {
-                    Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息---" + msg.obj.toString());
+                    Log.i("HandlerDemo", Thread.currentThread().getName() + "收到消息---" + msg.obj.toString());
                     Message message = new Message();
                     message.what = 2;
                     message.obj = msg.obj + "\n";
@@ -229,7 +229,7 @@ public class HandlerDemo extends Activity {
         public void run() {
             //模拟耗时操作,然后向子线程（Thread1）发送消息
             doSomthing();
-            Log.d("HandlerDemo", Thread.currentThread().getName() + "发送消息......");
+            Log.i("HandlerDemo", Thread.currentThread().getName() + "发送消息......");
             Message message = new Message();
             message.what = 0;
             message.obj = "2)Thread2处理完毕，发送消息......" + message.what + "\n";
@@ -254,7 +254,7 @@ public class HandlerDemo extends Activity {
             Handler threadHandler3 = new Handler(handlerThread.getLooper()) {
                 @Override
                 public void handleMessage(Message msg) {
-                    Log.d("HandlerDemo", Thread.currentThread().getName() + "收到消息--" + msg.what);
+                    Log.i("HandlerDemo", Thread.currentThread().getName() + "收到消息--" + msg.what);
                     Message message = new Message();
                     message.what = 4;
                     message.obj = "\n4)通过Thread3启动的handlerThread处理完毕，收到消息......" + msg.what + "\n";

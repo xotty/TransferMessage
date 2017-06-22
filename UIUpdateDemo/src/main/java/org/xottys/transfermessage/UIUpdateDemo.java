@@ -54,7 +54,7 @@ public class UIUpdateDemo extends Activity {
             @Override
             public void handleMessage(Message msg) {
                 tv.setText(msg.obj.toString());
-                Log.d("UIUpdateDemo", "SendMessage更新UI" + msg.obj.toString());
+                Log.i("UIUpdateDemo", "SendMessage更新UI" + msg.obj.toString());
                 new HandlerThread2().start();
             }
         };
@@ -82,7 +82,7 @@ public class UIUpdateDemo extends Activity {
             message.obj = "1)Handler SendMessage Update UI->OK\n\n";
             message.what = 1;
             mainHandler.sendMessage(message);
-            Log.d("UIUpdateDemo", "HandlerThread1处理完毕，发送消息......");
+            Log.i("UIUpdateDemo", "HandlerThread1处理完毕，发送消息......");
         }
     }
 
@@ -99,7 +99,7 @@ public class UIUpdateDemo extends Activity {
                 @Override
                 public void run() {
                     tv.append("2)Handler POST Update UI->OK" + "\n\n");
-                    Log.d("UIUpdateDemo", "HandlerThread2处理完毕，post直接更新UI");
+                    Log.i("UIUpdateDemo", "HandlerThread2处理完毕，post直接更新UI");
 
                     new UIThread().start();
                 }
@@ -118,7 +118,7 @@ public class UIUpdateDemo extends Activity {
                     @Override
                     public void run() {
                         tv.append("3)runOnUiThread Update UI->OK" + "\n\n");
-                        Log.d("UIUpdateDemo", "UIThread处理完毕，更新UI");
+                        Log.i("UIUpdateDemo", "UIThread处理完毕，更新UI");
 
                         new ViewPostThread().start();
                     }
@@ -140,7 +140,7 @@ public class UIUpdateDemo extends Activity {
                             tv.append("4)ViewPost Update UI->OK");
                             bt.setText("END");
                             bt.setEnabled(true);
-                            Log.d("UIUpdateDemo", "ViewPostThread处理完毕，更新UI");
+                            Log.i("UIUpdateDemo", "ViewPostThread处理完毕，更新UI");
                         }
                     });
                 }

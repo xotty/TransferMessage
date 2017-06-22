@@ -37,7 +37,7 @@ public class MainActivity extends Activity {
             myBinder = (MyBindService.MyBinder) service;
 
             tv.setText("MyBindService已绑定成功!\n\n初始值1-->City:" + myBinder.getCity() + "  GDP:" + myBinder.getGDP() + "\n\n");
-            Log.d(TAG, "--Service Connected--)" + "MyBindService初始值-->City:" + myBinder.getCity() + "  GDP:" + myBinder.getGDP());
+            Log.i(TAG, "--Service Connected--)" + "MyBindService初始值-->City:" + myBinder.getCity() + "  GDP:" + myBinder.getGDP());
 
             //向Service 传递数据的又一种方法，可以每次bindService 重复使用
             myBinder.setCity("杭州");
@@ -48,14 +48,14 @@ public class MainActivity extends Activity {
             myBinder.doSomething();
 
             tv.append("任务完成后返回值-->City:" + myBinder.getCity() + "  GDP:" + myBinder.getGDP());
-            Log.d(TAG, "MyBindService模拟任务完成后返回值-->City:" + myBinder.getCity() + "  GDP:" + myBinder.getGDP());
+            Log.i(TAG, "MyBindService模拟任务完成后返回值-->City:" + myBinder.getCity() + "  GDP:" + myBinder.getGDP());
 
         }
 
         // 当该Activity与Service断开连接时回调该方法
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            Log.d(TAG, "--Service Disconnected--");
+            Log.i(TAG, "--Service Disconnected--");
         }
     };
 
@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
         //Activity启动和消息传递
         bt1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                Log.d(TAG, "MainActivity准备启动MyActivity1");
+                Log.i(TAG, "MainActivity准备启动MyActivity1");
                 Intent intent = new Intent(MainActivity.this, MyActivity1.class);   //显式启动Activity
 
                 //第一种数据设置方法：直接用Intent设置数据
@@ -97,7 +97,7 @@ public class MainActivity extends Activity {
                 Intent intent = new Intent(MainActivity.this, MyStartService.class);
 
                 if (bt2.getText().equals("Start Service")) {
-                    Log.d(TAG, "MainActivity准备启动MyStartService");
+                    Log.i(TAG, "MainActivity准备启动MyStartService");
                     bt2.setText("Stop Service");
                     intent.putExtra("city", "上海");
                     intent.putExtra("GDP", 2.67f);
@@ -120,7 +120,7 @@ public class MainActivity extends Activity {
                 final Intent intent = new Intent(MainActivity.this, MyBindService.class);
 
                 if (bt3.getText().equals("Bind\n Service")) {
-                    Log.d(TAG, "MainActivity准备绑定MyBindService");
+                    Log.i(TAG, "MainActivity准备绑定MyBindService");
                     bt3.setText("Unbind\n Service");
 
                     //向Service 传递数据的一种方法，只能第一次bindService时使用

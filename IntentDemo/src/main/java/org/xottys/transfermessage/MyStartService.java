@@ -22,26 +22,26 @@ public class MyStartService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.d(TAG, "onCreate: MyStartService Created!");
+        Log.i(TAG, "onCreate: MyStartService Created!");
 
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "{" + Thread.currentThread().getName() + "}onDestroy: MyStartService Stoped!");
+        Log.i(TAG, "{" + Thread.currentThread().getName() + "}onDestroy: MyStartService Stoped!");
 
     }
 
     @Override
     //多次调用startService()方法并不会导致多次创建服务，但会导致多次调用onStartCommand()方法。
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.d(TAG, "onStart: MyStartService Started!");
+        Log.i(TAG, "onStart: MyStartService Started!");
         //获取和解析传入的消息
         String city = intent.getStringExtra("city");
         float GDP = intent.getFloatExtra("GDP", -1f);
-        Log.d(TAG, "{" + Thread.currentThread().getName() + "} MyStartService Started! City:" + city + "  GDP:" + GDP);
-        Log.d(TAG, "MyStartService准备启动MyIntentService");
+        Log.i(TAG, "{" + Thread.currentThread().getName() + "} MyStartService Started! City:" + city + "  GDP:" + GDP);
+        Log.i(TAG, "MyStartService准备启动MyIntentService");
 
         //启动IntentService，Android 5.0之后google出于安全的角度禁止了隐式声明Intent来启动Service
         Intent mIntent = new Intent(this, MyIntentService.class);

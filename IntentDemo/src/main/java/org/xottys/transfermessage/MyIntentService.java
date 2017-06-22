@@ -7,6 +7,7 @@ import android.util.Log;
 
 /**
  * 单独handler thread线程来处理异步任务，不支持BindService，会自动退出（不需要显式退出）
+ * 多次启动IntentService时实例也只有一个，每次启动的任务都会进入消息队列中，直到全部任务完成才会自动终止
  */
 public class MyIntentService extends IntentService {
     private static final String ACTION_FOO = "org.xottys.transfermessage.action.FOO";
@@ -38,7 +39,7 @@ public class MyIntentService extends IntentService {
         context.startService(intent);
     }
 
-    //主要处理任务都放在这儿，这是一个单独的线程
+    //主要处理任务都放在这儿，这是一个单独的异步处理方法，可以处理耗时工作
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -54,7 +55,7 @@ public class MyIntentService extends IntentService {
             } else {
                 String city = intent.getStringExtra("city");
                 float GDP = intent.getFloatExtra("GDP", -1f);
-                Log.d(TAG, "{" + Thread.currentThread().getName() + "}MyIntentService Started! City:" + city + "  GDP:" + GDP);
+                Log.i(TAG, "{" + Thread.currentThread().getName() + "}MyIntentService Started! City:" + city + "  GDP:" + GDP);
             }
         }
     }
@@ -63,7 +64,7 @@ public class MyIntentService extends IntentService {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d(TAG, "{" + Thread.currentThread().getName() + "}onDestroy：MyIntentService Stoped！");
+        Log.i(TAG, "{" + Thread.currentThread().getName() + "}onDestroy：MyIntentService Stoped！");
 
     }
 
@@ -75,7 +76,7 @@ public class MyIntentService extends IntentService {
 
     private void handleActionBaz(String param1, Float param2) {
 
-        Log.d(TAG, "{" + Thread.currentThread().getName() + "}MyIntentService！" + "City:" + param1 + "  GDP:" + param2);
+        Log.i(TAG, "{" + Thread.currentThread().getName() + "}MyIntentService！" + "City:" + param1 + "  GDP:" + param2);
 
     }
 }

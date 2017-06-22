@@ -169,7 +169,7 @@ public class MainActivity extends Activity implements CallbackInterface {
             String from = intent.getStringExtra("FROM");    //解析收到的消息1
             String msg = intent.getStringExtra("MSG");      //解析收到的消息2
             tv.append(from + "：" + msg + "\n");
-            Log.d("CBOTransferDemo", "MyBroadcastReceiver1收到-->" + from + "：" + msg);
+            Log.i("CBOTransferDemo", "MyBroadcastReceiver1收到-->" + from + "：" + msg);
 
             if (from.equals("Inside")) {
                 new Handler().postDelayed(new Runnable() {
@@ -193,7 +193,7 @@ public class MainActivity extends Activity implements CallbackInterface {
         @Override
         public void update(Observable observable, Object obj) {
             String msg = (String) obj;
-            Log.d("CBOTransferDemo", "MyObserver发现变化-->" + msg);
+            Log.i("CBOTransferDemo", "MyObserver发现变化-->" + msg);
             tv.append("MyObserver发现变化-->" + msg + "\n");
             if (msg.equals("第二次改变")) {
                 bt.setText("END");

@@ -8,15 +8,15 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
-        <activity android:name=".MainActivity">
+        <activity android:name="org.xottys.transfermessage.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyActivity1" />
-        <activity android:name=".MyActivity2">
+        <activity android:name="org.xottys.transfermessage.MyActivity1" />
+        <activity android:name="org.xottys.transfermessage.MyActivity2">
             <intent-filter>
                 <action android:name="MyActivity" />
 
@@ -25,14 +25,14 @@
         </activity>
 
         <service
-            android:name=".MyStartService"
+            android:name="org.xottys.transfermessage.MyStartService"
             android:enabled="true"
             android:exported="true" />
         <service
-            android:name=".MyIntentService"
+            android:name="org.xottys.transfermessage.MyIntentService"
             android:exported="false" />
         <service
-            android:name=".MyBindService"
+            android:name="org.xottys.transfermessage.MyBindService"
             android:enabled="true"
             android:exported="true"></service>
     </application>

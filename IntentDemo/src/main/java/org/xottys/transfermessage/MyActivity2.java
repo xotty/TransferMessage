@@ -33,7 +33,7 @@ public class MyActivity2 extends Activity {
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         float score = intent.getFloatExtra("score", -1f);
-        Log.d("IntentDemo", "MyActivity2收到MyActivity2传入的数据：" + name + ":" + score);
+        Log.i("IntentDemo", "MyActivity2收到MyActivity2传入的数据：" + name + ":" + score);
 
         tv.setText("MyActivity1---->MyActivity2\n\n" + "传入数据-->" + name + ":" + score);
 
@@ -59,7 +59,7 @@ public class MyActivity2 extends Activity {
                 //返回数据封装完成
                 setResult(1, intent);
 
-                Log.d("IntentDemo", "MyActivity2准备返回MyActivity1");
+                Log.i("IntentDemo", "MyActivity2准备返回MyActivity1");
 
                 finish();            //结束当前Activity，返回上一级
             }
@@ -73,7 +73,7 @@ public class MyActivity2 extends Activity {
                 Intent intent = new Intent(MyActivity2.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Log.d("IntentDemo", "MyActivity2准备返回MainActivity");
+                Log.i("IntentDemo", "MyActivity2准备返回MainActivity");
 
                 startActivity(intent);
             }
