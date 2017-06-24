@@ -79,7 +79,7 @@ public class MyMessengerService extends Service {
                     bundle.putString("server", "你好!客户端，我是Server.");
                     bundle.putString("client", data.getString("msg"));
                     msgToClient.setData(bundle);
-                    Log.i(TAG, "MyMessengerService向客户端回信:" + bundle.getString("msg"));
+                    Log.i(TAG, "MyMessengerService向客户端回信:" + bundle.getString("server"));
                     try {
                         //发送消息给客户端
                         clientMessenger.send(msgToClient);

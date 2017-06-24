@@ -53,7 +53,6 @@ public class MyActivity2 extends Activity {
             public void onClick(View v) {
                 //返回数据也封装在Inten中传递
                 Intent intent = new Intent();
-                intent.setAction("MyActivity");
                 intent.putExtra("name", "王五");
                 intent.putExtra("score", 70.5f);
                 //返回数据封装完成

@@ -19,6 +19,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.ContentObserver;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -36,6 +38,7 @@ public class MainActivity extends Activity implements CallbackInterface {
     private MyBroadcastReceiver1 mRreceiver;
     private MyObservable myObservable;
     private MyObserver myObserver;
+    private MyContentObserver myContentObserver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +111,12 @@ public class MainActivity extends Activity implements CallbackInterface {
                             myObservable.setData("第二次改变");
                         }
                     }, 3000);
+
+                    //使用ContentObserver监听短信发出
+                   myContentObserver=new MyContentObserver(new Handler());
+                    getContentResolver().registerContentObserver(
+                            Uri.parse("content://sms"), true,
+                            myContentObserver);
                 }
 
                 //演示结束，回到初始状态
@@ -115,6 +124,7 @@ public class MainActivity extends Activity implements CallbackInterface {
                     bt.setText("START");
 
                     tv.setText(R.string.hello);
+                    getContentResolver().unregisterContentObserver(myContentObserver);
                 }
             }
         });
@@ -162,7 +172,7 @@ public class MainActivity extends Activity implements CallbackInterface {
     }
 
 
-    //内部类方式定义广播接收者，此时若用静态注册时（XML中注册），该内部类必须是static的
+    //内部类方式定义广播接收者，此时若用静态注册时（XML中注册），该接收者内部类必须是static的
     class MyBroadcastReceiver1 extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -171,6 +181,7 @@ public class MainActivity extends Activity implements CallbackInterface {
             tv.append(from + "：" + msg + "\n");
             Log.i("CBOTransferDemo", "MyBroadcastReceiver1收到-->" + from + "：" + msg);
 
+            //如果收到的是内部类发出的广播，则继续调用外部广播类进行发送广播演示
             if (from.equals("Inside")) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -179,7 +190,9 @@ public class MainActivity extends Activity implements CallbackInterface {
                         new MyBroadcastSend(getApplicationContext()).mSendBroadcast("方法二：调用外部类发送广播");
                     }
                 }, 3000);
-            } else {
+            }
+            //如果收到的是外部类发出的广播，结束则广播演示，修改UI为其它演示操作做好准备
+            else {
                 tv.append(getResources().getString(R.string.mline) + "\n");
                 bt.setText("NEXT-2");
                 bt.setEnabled(true);
@@ -199,6 +212,25 @@ public class MainActivity extends Activity implements CallbackInterface {
                 bt.setText("END");
                 bt.setEnabled(true);
             }
+        }
+    }
+
+    // 提供自定义的ContentObserver监听器类
+    private final class MyContentObserver extends ContentObserver {
+      //private Handler mHandler;
+        public MyContentObserver(Handler handler) {
+            super(handler);
+        //  mHandler=handler;
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+
+            Log.i("CBOTransferDemo", "MyContenObserver发现变化!");
+            tv.append("MyContenObserver发现变化!\n");
+
+            //变化信息也可以通过这里的mHandler传到主线程中去处理,例如：
+            //mHandler.obtainMessage(1，sb.toString()).sendToTarget();
         }
     }
 }
