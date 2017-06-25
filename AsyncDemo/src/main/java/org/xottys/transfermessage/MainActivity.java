@@ -109,8 +109,9 @@ public class MainActivity extends Activity {
                     count = 0;
                     //一个AsyncTask只能使用一次，要再次使用须再new一个任务，否则要报异常
                     myAsyncTask = new MyAsyncTask();
-                    //启动AsyncTask
-                    myAsyncTask.execute();
+                    //启动AsyncTask，默认是串行执行。若想并行执行，启动方式须改为：
+                    //myAsyncTask.executeOnExecutor(THREAD_POOL_EXECUTOR，"myPara")
+                    myAsyncTask.execute("myPara");
 
                     bt2.setText("Stop\n AsyncTask");
                     bt1.setTextColor(0xFFA0A0A0);
@@ -124,8 +125,6 @@ public class MainActivity extends Activity {
                 } else {
                     //将AsyncTask的isCancelled()设置为"true"
                     myAsyncTask.cancel(true);
-
-                    tv.append("AsyncTask取消了！\n");
 
                     bt2.setText("Start\n AsyncTask");
                     bt1.setTextColor(0xFFFFFFFF);
@@ -197,7 +196,26 @@ public class MainActivity extends Activity {
         }
     }
 
-    //
+
+    //线程定义方法一
+    public class MyThread extends Thread {
+
+        @Override
+        public void run() {
+            doSomething();
+        }
+    }
+
+    //线程定义方法二
+    public class MyRunnable implements Runnable {
+        @Override
+        public void run() {
+            doSomething();
+        }
+
+    }
+
+    //执行异步任务,可以在任务的前中后给UI主线程发送消息
     class MyAsyncTask extends AsyncTask<String, Integer, Integer> {
 
         //UI线程中运行,用于在执行后台任务前做一些准备工作
@@ -210,7 +228,7 @@ public class MainActivity extends Activity {
         //工作线程中执行后台任务,不可在此方法内修改UI
         @Override
         protected Integer doInBackground(String... params) {
-            Log.i(TAG, "doInBackground called");
+            Log.i(TAG, "doInBackground called，收到参数："+params[0]);
             //为演示目的,另外开一线程完成具体工作
             Thread myThread = new MyThread();
             myThread.start();
@@ -259,25 +277,7 @@ public class MainActivity extends Activity {
         @Override
         protected void onCancelled() {
             Log.i(TAG, "onCancelled() called");
-            tv.append("\nCancelled\n");
+            tv.append("\n\nAsyncTask取消了！\n");
         }
-    }
-
-    //线程定义方法一
-    public class MyThread extends Thread {
-
-        @Override
-        public void run() {
-            doSomething();
-        }
-    }
-
-    //线程定义方法二
-    public class MyRunnable implements Runnable {
-        @Override
-        public void run() {
-            doSomething();
-        }
-
     }
 }
