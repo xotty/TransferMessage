@@ -1,6 +1,6 @@
 /**
  * Description: 跨进程消息传递（IPC）演示，1）Messenger   2）AIDL   3）Activity跳转
- *                                    4）BroadcastReceiver   5）ContentProvider
+ *                                     4）BroadcastReceiver   5）ContentProvider
  * <br/>Copyright (C), 2017-2018, Steve Chang
  * <br/>This program is protected by copyright laws.
  * <br/>Program Name:IPCDemo MainActivity
@@ -39,7 +39,7 @@ import org.xottys.IPC.MyAidlInterface;
 import static android.os.Process.myPid;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity  {
 
     private static final int SEND_MESSAGE_CODE = 0x0001;
     private static final int RECEIVE_MESSAGE_CODE = 0x0002;
@@ -67,6 +67,7 @@ public class MainActivity extends Activity {
             //客户端与Service建立连接
             Log.i(TAG, "客户端onServiceConnected");
             //Messenger方式演示
+
             if (name.getClassName().contains("MyMessengerService")) {
                 tv.setText("MyMessengerService已启动......\n\n");
                 //通过从MyMessengerService的onBind方法中返回的IBinder初始化了一个指向Server端的Messenger
