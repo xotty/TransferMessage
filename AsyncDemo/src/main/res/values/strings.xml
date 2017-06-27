@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AsyncDemo</string>
+    <string name="mline">------------------------------------------------------------------</string>
 </resources>

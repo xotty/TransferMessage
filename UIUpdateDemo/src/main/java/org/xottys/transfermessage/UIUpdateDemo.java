@@ -115,8 +115,8 @@ public class UIUpdateDemo extends Activity {
             public void run() {
                 doSomthing();
                 runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
+                        @Override
+                        public void run() {
                         tv.append("3)runOnUiThread Update UI->OK" + "\n\n");
                         Log.i("UIUpdateDemo", "UIThread处理完毕，更新UI");
 
