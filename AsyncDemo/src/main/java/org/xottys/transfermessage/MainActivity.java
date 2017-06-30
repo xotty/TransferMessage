@@ -1,6 +1,19 @@
+/**
+ * 本例演示了除HandlerThread和IntentService(这两个另有专题论述)以外所有的android异步方法
+ * 1）普通线程Thread   2）AsyncTask   3）Executor  4）Loader  5）AsyncQueryHandler
+ * <p>
+ * <br/>Copyright (C), 2017-2018, Steve Chang
+ * <br/>This program is protected by copyright laws.
+ * <br/>Program Name:AsyncDEMO
+ * <br/>Date:June，2017
+ *
+ * @author xottys@163.com
+ * @version 1.0
+ */
 package org.xottys.transfermessage;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,7 +37,7 @@ import static java.lang.Thread.currentThread;
 
 public class MainActivity extends Activity {
     private static final String TAG = "AsyncDemo";
-    Integer sum = 2,mSum;
+    Integer mSum;
     private Button bt1, bt2, bt3, bt4;
     private TextView tv;
     private ProgressBar progressBar;
@@ -42,7 +55,6 @@ public class MainActivity extends Activity {
         bt2 = (Button) findViewById(R.id.bt2);
         bt3 = (Button) findViewById(R.id.bt3);
         bt4 = (Button) findViewById(R.id.bt4);
-
         bt1.setBackgroundColor(0xbd292f34);
         bt1.setTextColor(0xFFFFFFFF);
         bt2.setBackgroundColor(0xbd292f34);
@@ -58,7 +70,7 @@ public class MainActivity extends Activity {
         // 获取系统的ContentResolver对象
         //contentResolver = getContentResolver();
 
-        //MyMessengerService启动和消息传递
+        //Thread启动和消息传递
         bt1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 if (bt1.getText().equals("Start\n Thread")) {
@@ -123,7 +135,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        //MyAidlService启动和消息传递
+        //AsyncTask启动和消息传递
         bt2.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
@@ -160,7 +172,7 @@ public class MainActivity extends Activity {
             }
         });
 
-        //跳转到另一个进程的Activity且可以获取返回值
+        //Executor启动和消息传递
         bt3.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 mSum=null;
@@ -169,12 +181,14 @@ public class MainActivity extends Activity {
                     MyCallable myCallable = new MyCallable();
                     myExectorService = Executors.newCachedThreadPool();
 
+                    //启动异步线程，可以是Callable，也可以是Runnable
                     myFuture = myExectorService.submit(myCallable);
                     //另外两种启动Executor的方式如下：
-                    //Future<Integer> myFuture = executor.submit(myRunnable,sum);
+                    //myFuture = executor.submit(myRunnable,sum);
                     //executor.execute(myRunnable);
 
-                    myExectorService.shutdown();    //关闭线程池，不再接收新任务
+                    //关闭线程池，不再接收新任务
+                    myExectorService.shutdown();
 
                     //继续做其它任务
                     Log.i(TAG, "任务开始于" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
@@ -184,9 +198,9 @@ public class MainActivity extends Activity {
                     new Thread() {
                         @Override
                         public void run() {
-                            //获取线程运行结果，该部分代码会被阻塞，直到线程返回结果或被意外终止
+                            //获取线程运行结果，该部分代码会被阻塞，直到异步线程返回结果或被意外终止
                             try {
-                                  mSum = myFuture.get(10000, TimeUnit.MILLISECONDS);
+                                mSum = myFuture.get(10000, TimeUnit.MILLISECONDS);
                                 Log.i(TAG, currentThread().getName() + "任务结束于" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "result=" + mSum);
                                 runOnUiThread(new Runnable() {
                                     @Override
@@ -222,9 +236,8 @@ public class MainActivity extends Activity {
                         }}.start();
 
                 } else if (bt3.getText().equals("NEXT")) {
-
                     MyRunnable myRunnable = new MyRunnable();
-                    myFutureTask = new FutureTask<Integer>(myRunnable, sum) {
+                    myFutureTask = new FutureTask<Integer>(myRunnable,mSum) {
                         @Override
                         protected void done() {
                             try {
@@ -269,8 +282,15 @@ public class MainActivity extends Activity {
                         }
                     };
                     myExectorService = Executors.newFixedThreadPool(4);
+
+                    //用FutureTask启动异步线程
                     myExectorService.execute(myFutureTask);
+                    //另外两种FutureTask启动方法如下：
+                    //myExectorService.submit(myFutureTask);
+                    //new Thread(myFutureTask).start();
+
                     myExectorService.shutdown();
+
                     bt3.setText("Cancel");
                     tv.append(getResources().getString(R.string.mline)+"\n");
                     tv.append("ExectorService.excute(myFutureTask)任务开始于："+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())+"\n");
@@ -297,14 +317,16 @@ public class MainActivity extends Activity {
             }
         });
 
-        //操作ContentProvider数据
+        //Loader启动和加载数据
         bt4.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
+                Intent intent = new Intent(MainActivity.this, LoaderActivity.class);   //显式启动Activity
 
-                bt4.setBackgroundColor(0xFFD7D7D7);
-                bt4.setTextColor(0xbd292f34);
-                bt3.setBackgroundColor(0xbd292f34);
-                bt3.setTextColor(0xFFFFFFFF);
+                startActivity(intent);
+//                bt4.setBackgroundColor(0xFFD7D7D7);
+//                bt4.setTextColor(0xbd292f34);
+//                bt3.setBackgroundColor(0xbd292f34);
+//                bt3.setTextColor(0xFFFFFFFF);
             }
         });
     }
@@ -312,7 +334,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i(TAG, "onResume: ---");
+        Log.i(TAG, "onResume: ----");
 
     }
 
@@ -322,18 +344,19 @@ public class MainActivity extends Activity {
         Log.i(TAG, "onDestroy: ----");
     }
 
+    //模拟任务，从1加到100，并逐行打印
     private int doSomething() {
         int sum = 0;
         for (int i = 1; i <= 100; i++) {
             count = i;
             sum += i;
             System.out.println(currentThread().getName() + "------" + count);
+            //延迟，模拟耗时
             try {
                 Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 System.out.println("Interrupted");
-
                 break;
             }
 

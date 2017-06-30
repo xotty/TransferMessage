@@ -32,7 +32,7 @@ public class MyProvider extends ContentProvider {
     @Override
     public String getType(Uri uri)
     {
-        System.out.println("~~getType方法被调用~~");
+        System.out.println("===getType方法被调用===");
         return null;
     }
 
