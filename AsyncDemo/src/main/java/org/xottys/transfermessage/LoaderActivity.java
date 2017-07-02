@@ -76,7 +76,6 @@ public class LoaderActivity extends Activity {
         bd.putString("Para1", "Name");
         bd.putInt("Para2", 2);
         getLoaderManager().initLoader(0, bd, new DataLoaderCallback());
-
         Log.i(TAG, "Init Loader......");
         //返回上一级
         bt1.setOnClickListener(new Button.OnClickListener() {
@@ -100,7 +99,7 @@ public class LoaderActivity extends Activity {
                     myQueryHandler = new MyQueryHandler(getContentResolver());
                     ContentValues values = new ContentValues();
                     Uri rawContactUri = Uri.parse("content://com.android.contacts/raw_contacts");
-                    long rawContactId  = ContentUris.parseId(getContentResolver().insert(rawContactUri , values));
+                    long rawContactId = ContentUris.parseId(getContentResolver().insert(rawContactUri, values));
                     values.clear();
                     values.put(ContactsContract.Contacts.Data.RAW_CONTACT_ID, rawContactId);
                     values.put(ContactsContract.Contacts.Data.MIMETYPE, ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE);
@@ -121,10 +120,10 @@ public class LoaderActivity extends Activity {
                     Uri uri = Uri.parse("content://com.android.contacts/data");
                     ContentValues values = new ContentValues();
                     values.put("data1", "Mercy Zhang");
-                    String whereClause = "mimetype= 'vnd.android.cursor.item/name' and data1='Steve Chang'";
+                    String whereClause = "mimetype=? and data1=?";
 
                     //修改通讯录，将姓名"Steve Chang"改为"Mercy Zhang"，
-                    myQueryHandler.startUpdate(2, null, uri, values, whereClause, null);
+                    myQueryHandler.startUpdate(2, null, uri, values, whereClause, new String[]{"vnd.android.cursor.item/name", "Steve Chang"});
 
                     bt2.setText("AsyncQuery\nHandler(Delete)");
 
@@ -133,9 +132,9 @@ public class LoaderActivity extends Activity {
                 else if (bt2.getText().equals("AsyncQuery\nHandler(Delete)")) {
 
                     Uri uri = Uri.parse("content://com.android.contacts/raw_contacts");
-                    String whereClause = "DISPLAY_NAME = 'Mercy Zhang'";
+                    String whereClause = "DISPLAY_NAME = ?";
                     //删除通讯录记录，将姓名为"Mercy Zhang"的记录删除
-                    myQueryHandler.startDelete(4, null, uri, whereClause, null);
+                    myQueryHandler.startDelete(4, null, uri, whereClause, new String[]{"Mercy Zhang"});
 
                     bt2.setText("AsyncQuery\nHandler(Insert)");
                     bt1.setBackgroundColor(0xbd292f34);
@@ -144,7 +143,7 @@ public class LoaderActivity extends Activity {
                 }
 
             }
-                                   });
+        });
     }
 
     // LoaderCallbacks
@@ -173,7 +172,7 @@ public class LoaderActivity extends Activity {
             adapter.clear();
             while (cursor.moveToNext()) {
                 String name = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                if (name!=null)
+                if (name != null)
                     adapter.add(name);
                 else
                     Log.i(TAG, "Null Exception: Name Null");
@@ -195,6 +194,7 @@ public class LoaderActivity extends Activity {
         }
     }
 
+    //通过内部封装的Handler，借助ContentProvider来异步操作数据库，提供CRUD四种操作及其每种操作完成后的结果回调
     private class MyQueryHandler extends AsyncQueryHandler {
         public MyQueryHandler(ContentResolver contentResolver) {
             super(contentResolver);
@@ -239,21 +239,18 @@ public class LoaderActivity extends Activity {
         //StartDelete完成时执行此方法
         @Override
         protected void onDeleteComplete(int token, Object cookie, int result) {
-            if (token == 4)
-            {
+            if (token == 4) {
                 Uri uri = Uri.parse("content://com.android.contacts/data");
-                String whereClause = "mimetype= 'vnd.android.cursor.item/name' and Data.DATA1 ='Mercy Zhang'";
-                myQueryHandler.startDelete(5, null, uri, whereClause, null);
+                String whereClause = "mimetype=? and Data.DATA1 =?";
+                myQueryHandler.startDelete(5, null, uri, whereClause, new String[]{"vnd.android.cursor.item/name", "Mercy Zhang"});
+            } else if (token == 5)
+
+            {
+                myQueryHandler.startQuery(0, null, uri, CONTACTS_SUMMARY_PROJECTION, null, null, null);
+
+                tv.append("删除:Mercy Zhang.\n");
+                Log.i(TAG, "onDeleteComplete,删除一条记录.");
             }
-            else   if (token == 5)
-
-        {
-            myQueryHandler.startQuery(0, null, uri, CONTACTS_SUMMARY_PROJECTION, null, null, null);
-
-            tv.append("删除:Mercy Zhang.\n");
-            Log.i(TAG, "onDeleteComplete,删除一条记录.");
         }
     }
-    }
-
 }

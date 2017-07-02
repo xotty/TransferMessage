@@ -32,12 +32,15 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import static java.lang.Thread.currentThread;
 
 public class MainActivity extends Activity {
     private static final String TAG = "AsyncDemo";
-    Integer mSum;
+    private final Object obj = new Object();
+    private final byte[] lock = new byte[0];
+    volatile Integer mSum = 0;
     private Button bt1, bt2, bt3, bt4;
     private TextView tv;
     private ProgressBar progressBar;
@@ -46,6 +49,8 @@ public class MainActivity extends Activity {
     private Future<Integer> myFuture;
     private FutureTask myFutureTask;
     private ExecutorService myExectorService;
+    private Thread myThread1, myThread2;
+    private volatile boolean stopFlag = false;    //volatile主要用途之一，线程循环控制变量
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,20 +75,57 @@ public class MainActivity extends Activity {
         // 获取系统的ContentResolver对象
         //contentResolver = getContentResolver();
 
-        //Thread启动和消息传递
+        //Thread启动和消息传递，演示Volatile和Synchonized，wait／notify的简单用法
         bt1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
+                //通过wait/notify机制同步两个线程的操作
                 if (bt1.getText().equals("Start\n Thread")) {
+                    bt1.setText("Interrupt\n Thread");
+                    Log.i(TAG, "Start Thread");
 
-                    Log.i(TAG, "Thread");
 
                     //线程定义方法一
-                    Thread myThread1 = new MyThread();
+                    myThread1 = new MyThread();
+                    myThread1.setName("myThread1");
                     myThread1.start();
 
                     //线程定义方法二
-                    Thread myThread2 = new Thread(new MyRunnable());
+                    myThread2 = new Thread(new MyRunnable());
+                    myThread2.setName("myThread2");
                     myThread2.start();
+
+                    tv.setText("线程启动，开始执行");
+                    bt1.setBackgroundColor(0xFFD7D7D7);
+                    bt1.setTextColor(0xbd292f34);
+
+                    bt2.setTextColor(0xFFA0A0A0);
+                    bt3.setTextColor(0xFFA0A0A0);
+                    bt4.setTextColor(0xFFA0A0A0);
+                    bt2.setBackgroundColor(0xbd292f34);
+                    bt3.setBackgroundColor(0xbd292f34);
+                    bt4.setBackgroundColor(0xbd292f34);
+                    bt2.setEnabled(false);
+                    bt3.setEnabled(false);
+                    bt4.setEnabled(false);
+                    progressBar.setProgress(0);
+                    //中断线程运行
+                } else if (bt1.getText().equals("Interrupt\n Thread")) {
+                    myThread1.interrupt();
+                    myThread2.interrupt();
+                    tv.append("\n线程中断,当前计算结果：" + mSum + "\n");
+                    bt1.setText("Callable\n Thread");
+
+                    //通过synchronized机制同步两个线程的操作
+                } else if (bt1.getText().equals("Callable\n Thread")) {
+                    //匿名线程启动，线程名称为"myThread",它与后面用FutureTask启动的线程执行的是同一个用Sychonized加锁的方法，二者互斥
+                    new Thread("myThread") {
+                        @Override
+                        public void run() {
+                            int sum = doSomething("myThread");
+                        }
+                    }.start();
+
+                    tv.append("\n\nCallable线程启动");
 
                     //线程定义方法三，FutureTask是为了弥补Thread的不足而设计的，多用于耗时的计算
                     // 它可以让程序员准确地知道线程什么时候执行完成并获得到线程执行完成后返回的结果
@@ -92,37 +134,14 @@ public class MainActivity extends Activity {
                     FutureTask<Integer> myFutureTask = new FutureTask<>(myCallable);
                     new Thread(myFutureTask).start();
 
-                    while (!myFutureTask.isDone()) {
-                        try {
-                            Thread.sleep(50);
-                            System.out.println("任务还未完成，请等待......");
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    //接收线程运算后的结果
+                    //接收线程运算后的结果,此部分将阻塞UI线程
                     try {
                         Integer result = myFutureTask.get();   //在所有的线程没有执行完成之后这里是不会执行的
                         System.out.println("Executor result:" + result);
-                        tv.setText("Executor result:" + result);
+                        tv.append("\nCallable线程结束，计算结果：" + result + "\n");
                     } catch (InterruptedException | ExecutionException e) {
                         e.printStackTrace();
                     }
-                    bt1.setText("Stop\n Thread");
-                    bt2.setTextColor(0xFFA0A0A0);
-                    bt3.setTextColor(0xFFA0A0A0);
-                    bt4.setTextColor(0xFFA0A0A0);
-                    bt3.setBackgroundColor(0xbd292f34);
-                    bt4.setBackgroundColor(0xbd292f34);
-                    bt2.setEnabled(false);
-                    bt3.setEnabled(false);
-                    bt4.setEnabled(false);
-                    progressBar.setProgress(0);
-                } else {
-
-                    //解除Service绑定
-                    //  unbindService(conn);
-                    tv.setText("MyMessengerService解除绑定");
 
                     bt1.setText("Start\n Thread");
                     bt2.setTextColor(0xFFFFFFFF);
@@ -132,6 +151,8 @@ public class MainActivity extends Activity {
                     bt3.setEnabled(true);
                     bt4.setEnabled(true);
                 }
+
+
             }
         });
 
@@ -147,16 +168,20 @@ public class MainActivity extends Activity {
                     //启动AsyncTask，默认是串行执行。若想并行执行，启动方式须改为：
                     //myAsyncTask.executeOnExecutor(THREAD_POOL_EXECUTOR，"myPara")
                     myAsyncTask.execute("myPara");
-
                     bt2.setText("Stop\n AsyncTask");
+                    bt2.setBackgroundColor(0xFFD7D7D7);
+                    bt2.setTextColor(0xbd292f34);
+
                     bt1.setTextColor(0xFFA0A0A0);
                     bt3.setTextColor(0xFFA0A0A0);
                     bt4.setTextColor(0xFFA0A0A0);
+                    bt1.setBackgroundColor(0xbd292f34);
                     bt3.setBackgroundColor(0xbd292f34);
                     bt4.setBackgroundColor(0xbd292f34);
                     bt1.setEnabled(false);
                     bt3.setEnabled(false);
                     bt4.setEnabled(false);
+
                     progressBar.setProgress(0);
                 } else {
                     //将AsyncTask的isCancelled()设置为"true"
@@ -175,7 +200,7 @@ public class MainActivity extends Activity {
         //Executor启动和消息传递
         bt3.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-                mSum=null;
+                mSum = null;
 
                 if (bt3.getText().equals("Start\n Executor")) {
                     MyCallable myCallable = new MyCallable();
@@ -184,16 +209,27 @@ public class MainActivity extends Activity {
                     //启动异步线程，可以是Callable，也可以是Runnable
                     myFuture = myExectorService.submit(myCallable);
                     //另外两种启动Executor的方式如下：
-                    //myFuture = executor.submit(myRunnable,sum);
-                    //executor.execute(myRunnable);
+                    //myFuture = myExectorService.submit(myRunnable,sum);
+                    //myExectorService.execute(myRunnable);
 
-                    //关闭线程池，不再接收新任务
-                    myExectorService.shutdown();
+                    try {
+                        //关闭线程池，不再接收新任务
+                        myExectorService.shutdown();
+
+                        // 在指定的时间内所有的任务都结束的时候，返回true，反之返回false
+                        if (!myExectorService.awaitTermination(2000, TimeUnit.MILLISECONDS)) {
+
+                            myExectorService.shutdownNow();
+                        }
+                    } catch (InterruptedException e) {
+                        //向所有执行中的线程发出interrupted以中止线程的运行
+                        myExectorService.shutdownNow();
+                    }
 
                     //继续做其它任务
                     Log.i(TAG, "任务开始于" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
                     bt3.setText("CANCEL");
-                    tv.setText("ExectorService.submit(myCallable)任务开始于："+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())+"\n");
+                    tv.setText("ExectorService.submit(myCallable)任务开始于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "\n");
 
                     new Thread() {
                         @Override
@@ -206,7 +242,8 @@ public class MainActivity extends Activity {
                                     @Override
                                     public void run() {
                                         tv.append("ExectorService.submit(myCallable)任务完成于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "---result=" + mSum + "\n");
-                                    }});
+                                    }
+                                });
 
                             } catch (InterruptedException e) {
                                 Log.e(TAG, currentThread().getName() + "任务终止于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()));
@@ -216,10 +253,13 @@ public class MainActivity extends Activity {
                                     @Override
                                     public void run() {
                                         bt3.setText("NEXT");
-                                        tv.append("ExectorService.submit(myCallable)任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date())+"---result=" + mSum +"\n");
+                                        tv.append("ExectorService.submit(myCallable)任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()) + "---result=" + mSum + "\n");
                                     }
                                 });
-                                Log.e(TAG, currentThread().getName() + "任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date())+"---result=" + mSum );
+                                Log.e(TAG, currentThread().getName() + "任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()) + "---result=" + mSum);
+
+                            } catch (TimeoutException e) {
+                                Log.e(TAG, "TAG, currentThread().getName()" + "获取结果超时。");
 
                             } catch (Exception e) {
                                 Log.e(TAG, currentThread().getName() + "出现意外错误于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()));
@@ -233,11 +273,12 @@ public class MainActivity extends Activity {
                                     bt3.setText("NEXT");
                                 }
                             });
-                        }}.start();
+                        }
+                    }.start();
 
                 } else if (bt3.getText().equals("NEXT")) {
                     MyRunnable myRunnable = new MyRunnable();
-                    myFutureTask = new FutureTask<Integer>(myRunnable,mSum) {
+                    myFutureTask = new FutureTask<Integer>(myRunnable, mSum) {
                         @Override
                         protected void done() {
                             try {
@@ -247,7 +288,7 @@ public class MainActivity extends Activity {
                                     @Override
                                     public void run() {
                                         bt3.setText("Start\n Executor");
-                                        tv.append("ExectorService.excute(myFutureTask)任务完成于："+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())+ "--result=" + mSum+"\n");
+                                        tv.append("ExectorService.excute(myFutureTask)任务完成于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "--result=" + mSum + "\n");
                                         bt1.setTextColor(0xFFFFFFFF);
                                         bt2.setTextColor(0xFFFFFFFF);
                                         bt4.setTextColor(0xFFFFFFFF);
@@ -260,12 +301,12 @@ public class MainActivity extends Activity {
                                 Log.e(TAG, currentThread().getName() + "任务终止于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()));
 
                             } catch (CancellationException e) {
-                                Log.e(TAG, currentThread().getName() + "任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date())+ "--result=" + mSum);
+                                Log.e(TAG, currentThread().getName() + "任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()) + "--result=" + mSum);
                                 bt3.post(new Runnable() {
                                     @Override
                                     public void run() {
-                                bt3.setText("Start\n Executor");
-                                tv.append("ExectorService.excute(myFutureTask)任务取消于："+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())+ "--result=" + mSum+"\n");
+                                        bt3.setText("Start\n Executor");
+                                        tv.append("ExectorService.excute(myFutureTask)任务取消于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "--result=" + mSum + "\n");
                                         bt1.setTextColor(0xFFFFFFFF);
                                         bt2.setTextColor(0xFFFFFFFF);
                                         bt4.setTextColor(0xFFFFFFFF);
@@ -292,8 +333,8 @@ public class MainActivity extends Activity {
                     myExectorService.shutdown();
 
                     bt3.setText("Cancel");
-                    tv.append(getResources().getString(R.string.mline)+"\n");
-                    tv.append("ExectorService.excute(myFutureTask)任务开始于："+new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date())+"\n");
+                    tv.append(getResources().getString(R.string.mline) + "\n");
+                    tv.append("ExectorService.excute(myFutureTask)任务开始于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "\n");
                 } else if (bt3.getText().equals("CANCEL")) {
                     myFuture.cancel(true);
                 } else if (bt3.getText().equals("Cancel")) {
@@ -321,12 +362,15 @@ public class MainActivity extends Activity {
         bt4.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, LoaderActivity.class);   //显式启动Activity
-
                 startActivity(intent);
-//                bt4.setBackgroundColor(0xFFD7D7D7);
-//                bt4.setTextColor(0xbd292f34);
-//                bt3.setBackgroundColor(0xbd292f34);
-//                bt3.setTextColor(0xFFFFFFFF);
+
+                bt1.setBackgroundColor(0xbd292f34);
+                bt2.setBackgroundColor(0xbd292f34);
+                bt3.setBackgroundColor(0xbd292f34);
+                bt1.setTextColor(0xFFFFFFFF);
+                bt2.setTextColor(0xFFFFFFFF);
+                bt3.setTextColor(0xFFFFFFFF);
+                progressBar.setProgress(0);
             }
         });
     }
@@ -345,23 +389,60 @@ public class MainActivity extends Activity {
     }
 
     //模拟任务，从1加到100，并逐行打印
-    private int doSomething() {
-        int sum = 0;
-        for (int i = 1; i <= 100; i++) {
-            count = i;
-            sum += i;
-            System.out.println(currentThread().getName() + "------" + count);
-            //延迟，模拟耗时
-            try {
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                System.out.println("Interrupted");
-                break;
-            }
+    //参数name用来区别是否需要加wait／notify和进行UI更新机制
+    private int doSomething(String name) {
+        //全程锁，演示两个线程分别调用它时实际是分先后执行的
+        synchronized (lock) {
+            int sum = 0;
+            for (int i = 1; i <= 100; i++) {
+                if (!Thread.currentThread().isInterrupted()) {
+                    count = i;
+                    sum += i;
+                    mSum = sum;
+                    if (name.equals("Thread") || name.equals("Callable")) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setProgress(count);
+                                tv.append(".");
+                            }
+                        });
+                    }
+                    Log.i(TAG, currentThread().getName() + "------" + count);
+                    //局部锁，演示两个线程处于互相交替执行状态
+                    if (name.equals("Thread")) {
+                        synchronized (obj) {
+                            //一步计算完成，唤醒打印本步计算结果
+                            obj.notifyAll();
+                        }
+                        synchronized (lock) {
+                            try {
+                                //等待本步结果打印后被唤醒
+                                lock.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
 
+                    //延迟，模拟耗时
+                    try {
+                        Thread.sleep(20);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        System.out.println("Interrupted");
+                        break;
+                    }
+                } else
+                    break;
+            }
+            stopFlag = true;   //设置打印结果线程结束的标志
+            synchronized (obj) {
+                //最后唤醒打印进程结束
+                obj.notify();
+            }
+            return sum;
         }
-        return sum;
     }
 
 
@@ -370,23 +451,60 @@ public class MainActivity extends Activity {
 
         @Override
         public void run() {
-            doSomething();
+            //这个等待用来保证MyRunnable先执行以到达wait
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            doSomething("Thread");
         }
     }
 
-    //线程定义方法二
+
+    //线程定义方法二,功能是打印doSomthing每一步的计算结果
     public class MyRunnable implements Runnable {
         @Override
         public void run() {
-            doSomething();
+            if (!Thread.currentThread().isInterrupted()) {
+                stopFlag = false;
+                do {
+                    try {
+                        synchronized (obj) {
+                            //等待一步计算完成后被唤醒
+                            obj.wait();
+                            Log.i(TAG, currentThread().getName() + "---mSum=" + mSum);
+
+                        }
+                        synchronized (lock) {   //一步计算结果已打印完成，唤醒继续计算下一步
+                            lock.notify();
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                        stopFlag = true;
+                    }
+
+                } while (!stopFlag);
+
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        tv.append("\n线程执行结束，计算结果：" + mSum);
+                        bt1.setText("Callable\n Thread");
+                    }
+                });
+            }
         }
     }
 
-    //线程定义方法三，可以有返回结果，可以抛出异常，可以中途干预
+
+    //线程定义方法三，可以有返回结果，可以抛出异常
     class MyCallable implements Callable<Integer> {
         @Override
         public Integer call() throws Exception {
-            int sum = doSomething();
+            int sum = 0;
+            sum = doSomething("Callable");
             return sum;
         }
     }
@@ -407,7 +525,12 @@ public class MainActivity extends Activity {
         protected Integer doInBackground(String... params) {
             Log.i(TAG, "doInBackground called，收到参数：" + params[0]);
             //为演示目的,另外开一线程完成具体工作
-            Thread myThread = new MyThread();
+            Thread myThread = new Thread("myThread") {
+                @Override
+                public void run() {
+                    doSomething("Callable");
+                }
+            };
             myThread.start();
 
             int mcount = 0;
@@ -438,9 +561,11 @@ public class MainActivity extends Activity {
         //UI线程中运行,用于更新进度信息
         @Override
         protected void onProgressUpdate(Integer... progresses) {
-            Log.i(TAG, "onProgressUpdate called----" + progresses[0] + "%");
-            progressBar.setProgress(progresses[0]);
-            tv.setText("AsyncTask准备开始......\n\nLoading..." + progresses[0] + "%");
+            if (!isCancelled()) {
+                Log.i(TAG, "onProgressUpdate called----" + progresses[0] + "%");
+                progressBar.setProgress(progresses[0]);
+                tv.setText("AsyncTask准备开始......\n\nLoading..." + progresses[0] + "%");
+            }
         }
 
         //UI线程中运行,onPostExecute方法用于在执行完后台任务后更新UI,显示结果

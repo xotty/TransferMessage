@@ -19,7 +19,8 @@ public class MyIntentService extends IntentService {
 
     public MyIntentService() {
 
-        super("myIntentService");           // 设置子线程名称
+        super("myIntentService");      // 设置子线程名称
+        setIntentRedelivery(true);     //该service在onHandleIntent返回之前死掉则会自动重新启动并投递intent
     }
 
 

@@ -120,6 +120,7 @@ public class HandlerDemo extends Activity {
                     }
                     break;
                     case 4: {
+                        handlerThread.quit();
                         bt.setText("END");
                         bt.setEnabled(true);
                     }
@@ -252,17 +253,19 @@ public class HandlerDemo extends Activity {
             handlerThread.start();
             //定义子线程Handler（ threadHandler3）
             Handler threadHandler3 = new Handler(handlerThread.getLooper()) {
+                //这里是handlerThread真正完成的工作
                 @Override
                 public void handleMessage(Message msg) {
                     Log.i("HandlerDemo", Thread.currentThread().getName() + "收到消息--" + msg.what);
                     Message message = new Message();
                     message.what = 4;
                     message.obj = "\n4)通过Thread3启动的handlerThread处理完毕，收到消息......" + msg.what + "\n";
+                    doSomthing();
                     mainHandler.sendMessage(message);
                 }
             };
 
-            //向子线程（handlerThread）发送消息
+            //启动handlerThread
             threadHandler3.sendEmptyMessage(0);
         }
 
