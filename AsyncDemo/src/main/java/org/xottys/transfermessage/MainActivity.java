@@ -84,9 +84,10 @@ public class MainActivity extends Activity {
         // 获取系统的ContentResolver对象
         //contentResolver = getContentResolver();
 
-        //Thread启动和消息传递，演示了如下内容：
+        //Thread启动和消息传递，Thread除了可以用标准的变量传递方法
+        //（详见VariableTransferDemo）外，还可以用下列2）3）两种方法：
         //1）Thread三种构造方法
-        //2）共享内存方式的数据传递，主要用Volatile修饰符（如stopFlag）
+        //2）共享内存方式的数据传递，主要用Volatile修饰符（如本例中的stopFlag）
         //3）PipedOutputStream／PipedInputStream方式传递数据
         //4）Synchonized，wait／notify的简单用法
         bt1.setOnClickListener(new Button.OnClickListener() {
@@ -150,7 +151,7 @@ public class MainActivity extends Activity {
                     tv.append("\n\nCallable线程启动");
 
                     //线程定义方法三，FutureTask是为了弥补Thread的不足而设计的，多用于耗时的计算
-                    // 它可以让程序员准确地知道线程什么时候执行完成并获得到线程执行完成后返回的结果
+                    //它可以让程序员准确地知道线程什么时候执行完成并获得到线程执行完成后返回的结果
                     MyCallable myCallable = new MyCallable();
                     //用Callable方式，定义和启动线程
                     FutureTask<Integer> myFutureTask = new FutureTask<>(myCallable);
