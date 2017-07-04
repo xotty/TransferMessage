@@ -108,7 +108,6 @@ public class LoaderActivity extends Activity {
                     //添加通讯录记录，新加记录的姓名是"Steve Chang"
                     myQueryHandler.startInsert(1, null, ContactsContract.Data.CONTENT_URI, values);
 
-
                     bt2.setText("AsyncQuery\nHandler(Update)");
                     bt2.setBackgroundColor(0xFFD7D7D7);
                     bt2.setTextColor(0xbd292f34);
@@ -150,6 +149,7 @@ public class LoaderActivity extends Activity {
     private class DataLoaderCallback implements LoaderManager.LoaderCallbacks<Cursor> {
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+
 
             Log.i(TAG, "onCreateLoader收到传入参数args: " + args.getString("Para1") + "和" + args.getInt("Para2"));
             // 当一个新的loader需被创建时调用，设置URI，URI指向的是系统通讯录

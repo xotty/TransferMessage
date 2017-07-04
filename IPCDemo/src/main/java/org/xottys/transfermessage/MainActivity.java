@@ -34,6 +34,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.json.JSONObject;
 import org.xottys.IPC.MyAidlInterface;
 
 import static android.os.Process.myPid;
@@ -80,7 +81,7 @@ public class MainActivity extends Activity  {
                 Bundle data = new Bundle();
                 data.putString("msg", "你好！我是客户端。");
                 msg.setData(data);
-
+                JSONObject.toBean
                 //需要将Message的replyTo设置为客户端的clientMessenger，以便Server可以通过它向客户端发送消息
                 msg.replyTo = clientMessenger;
 

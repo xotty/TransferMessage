@@ -22,6 +22,11 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.PipedInputStream;
+import java.io.PipedOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.Callable;
@@ -49,7 +54,11 @@ public class MainActivity extends Activity {
     private Future<Integer> myFuture;
     private FutureTask myFutureTask;
     private ExecutorService myExectorService;
-    private Thread myThread1, myThread2;
+    private MyThread myThread1;
+    private Thread myThread2;
+    private PipedOutputStream outStream;
+    private PipedInputStream inStream;
+
     private volatile boolean stopFlag = false;    //volatile主要用途之一，线程循环控制变量
 
     @Override
@@ -75,7 +84,11 @@ public class MainActivity extends Activity {
         // 获取系统的ContentResolver对象
         //contentResolver = getContentResolver();
 
-        //Thread启动和消息传递，演示Volatile和Synchonized，wait／notify的简单用法
+        //Thread启动和消息传递，演示了如下内容：
+        //1）Thread三种构造方法
+        //2）共享内存方式的数据传递，主要用Volatile修饰符（如stopFlag）
+        //3）PipedOutputStream／PipedInputStream方式传递数据
+        //4）Synchonized，wait／notify的简单用法
         bt1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 //通过wait/notify机制同步两个线程的操作
@@ -83,15 +96,24 @@ public class MainActivity extends Activity {
                     bt1.setText("Interrupt\n Thread");
                     Log.i(TAG, "Start Thread");
 
-
                     //线程定义方法一
                     myThread1 = new MyThread();
                     myThread1.setName("myThread1");
-                    myThread1.start();
 
                     //线程定义方法二
-                    myThread2 = new Thread(new MyRunnable());
+                    MyRunnable myRunnable = new MyRunnable();
+                    myThread2 = new Thread(myRunnable);
                     myThread2.setName("myThread2");
+
+                    //将两个线程的PipedOutputStream／PipedInputStream进行关联
+                    try {
+                        myThread1.getOutStream().connect(myRunnable.getInStream());
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    myThread1.start();
                     myThread2.start();
 
                     tv.setText("线程启动，开始执行");
@@ -394,11 +416,26 @@ public class MainActivity extends Activity {
         //全程锁，演示两个线程分别调用它时实际是分先后执行的
         synchronized (lock) {
             int sum = 0;
+            //因要传递整数，故用DataOutputStream封装流
+            DataOutputStream dos = new DataOutputStream(outStream);
             for (int i = 1; i <= 100; i++) {
                 if (!Thread.currentThread().isInterrupted()) {
                     count = i;
                     sum += i;
                     mSum = sum;
+
+                    if (name.equals("Thread")) {
+                        try {
+                            //通过PipedOutputSream发送计算结果
+                            dos.writeInt(sum);
+                            //刷新流缓冲区
+                            outStream.flush();
+
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
                     if (name.equals("Thread") || name.equals("Callable")) {
                         runOnUiThread(new Runnable() {
                             @Override
@@ -425,22 +462,26 @@ public class MainActivity extends Activity {
                         }
                     }
 
-                    //延迟，模拟耗时
-                    try {
-                        Thread.sleep(20);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                        System.out.println("Interrupted");
-                        break;
-                    }
                 } else
                     break;
             }
+
             stopFlag = true;   //设置打印结果线程结束的标志
             synchronized (obj) {
                 //最后唤醒打印进程结束
                 obj.notify();
             }
+            //关闭输出流
+            if (name.equals("Thread")) {
+                try {
+                    outStream.close();
+                    Log.i(TAG, "PipedOutputSream Cloesd ");
+                } catch (
+                        IOException e) {
+
+                }
+            }
+
             return sum;
         }
     }
@@ -448,6 +489,15 @@ public class MainActivity extends Activity {
 
     //线程定义方法一
     public class MyThread extends Thread {
+
+        public MyThread() {
+            outStream = new PipedOutputStream();
+        }
+
+        public PipedOutputStream getOutStream() {
+            return outStream;
+
+        }
 
         @Override
         public void run() {
@@ -457,25 +507,39 @@ public class MainActivity extends Activity {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
             doSomething("Thread");
         }
     }
 
-
     //线程定义方法二,功能是打印doSomthing每一步的计算结果
     public class MyRunnable implements Runnable {
+
+
+        public MyRunnable() {
+            inStream = new PipedInputStream();
+        }
+
+        public PipedInputStream getInStream() {
+            return inStream;
+        }
+
         @Override
         public void run() {
             if (!Thread.currentThread().isInterrupted()) {
                 stopFlag = false;
+                //因要接收整数，故用DataInputStream封装流
+                DataInputStream myDataInputStream = new DataInputStream(inStream);
                 do {
                     try {
                         synchronized (obj) {
                             //等待一步计算完成后被唤醒
                             obj.wait();
-                            Log.i(TAG, currentThread().getName() + "---mSum=" + mSum);
-
+                            //为避免在输出流结束后输入流仍然执行读取操作而抛出异常，加此判断条件
+                            if (!stopFlag) {
+                                //从PipedInputStream中获取计算解结果
+                                int xsum = myDataInputStream.readInt();
+                                Log.i(TAG, currentThread().getName() + "---Sum=" + xsum);
+                            }
                         }
                         synchronized (lock) {   //一步计算结果已打印完成，唤醒继续计算下一步
                             lock.notify();
@@ -483,10 +547,18 @@ public class MainActivity extends Activity {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                         stopFlag = true;
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
 
-                } while (!stopFlag);
 
+                } while (!stopFlag);
+                try {
+                    inStream.close();
+                    Log.i(TAG, "PipedInputStream Cloesd ");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -584,3 +656,4 @@ public class MainActivity extends Activity {
         }
     }
 }
+
