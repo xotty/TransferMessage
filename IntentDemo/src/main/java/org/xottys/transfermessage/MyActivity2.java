@@ -13,6 +13,7 @@ import android.widget.TextView;
  * 隐式启动的Activity，有返回数据
  */
 public class MyActivity2 extends Activity {
+    final private String TAG = "IntentDemo";
     private Button bt1, bt2, bt3;
     private TextView tv;
 
@@ -67,8 +68,6 @@ public class MyActivity2 extends Activity {
         //越级直接返回MainActivity
         bt3.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-
-
                 Intent intent = new Intent(MyActivity2.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

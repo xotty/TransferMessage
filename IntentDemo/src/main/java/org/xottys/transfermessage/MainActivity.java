@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
     private Button bt1, bt2, bt3;
     private TextView tv;
     private ServiceConnection conn = new ServiceConnection() {
-        // 当该Activity与Service连接成功时回调该方法
+        //每个宿主与service第一次Bind成功时会回调该方法，同一宿主第二次及以后bind同一Sercice时不会再回调本方法，除非unBindService后再次Bind
         @Override
         public void onServiceConnected(ComponentName name
                 , IBinder service) {
@@ -79,8 +79,8 @@ public class MainActivity extends Activity {
         bt1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
                 Log.i(TAG, "MainActivity准备启动MyActivity1");
-                Intent intent = new Intent(MainActivity.this, MyActivity1.class);   //显式启动Activity
 
+                Intent intent = new Intent(MainActivity.this, MyActivity1.class);   //显式启动Activity
                 //第一种数据设置方法：直接用Intent设置数据
                 intent.putExtra("name", "张三");
                 intent.putExtra("score", 95.5f);
@@ -116,18 +116,20 @@ public class MainActivity extends Activity {
         //Service绑定和消息传递演
         bt3.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
-
                 final Intent intent = new Intent(MainActivity.this, MyBindService.class);
 
                 if (bt3.getText().equals("Bind\n Service")) {
                     Log.i(TAG, "MainActivity准备绑定MyBindService");
                     bt3.setText("Unbind\n Service");
+                    tv.setText("");
 
                     //向Service 传递数据的一种方法，只能第一次bindService时使用
                     intent.putExtra("city", "广州");
                     intent.putExtra("GDP", 2.00f);
                     // 绑定指定Serivce
                     bindService(intent, conn, Service.BIND_AUTO_CREATE);
+
+
                 } else {
                     bt3.setText("Bind\n Service");
                     tv.setText("MyBindService准备解除绑定!\nMyBindService返回值-->" + myBinder.getCount());

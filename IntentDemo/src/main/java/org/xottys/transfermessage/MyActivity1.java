@@ -13,6 +13,7 @@ import android.widget.TextView;
  * 显式启动的Activity，无返回数据
  */
 public class MyActivity1 extends Activity {
+    final private String TAG = "IntentDemo";
     private Button bt1, bt2;
     private TextView tv;
 
@@ -30,7 +31,7 @@ public class MyActivity1 extends Activity {
         Intent intent = getIntent();
         String name = intent.getStringExtra("name");
         float score = intent.getFloatExtra("score", -1f);
-        Log.i("IntentDemo", "MyActivity1已启动，接收数据：" + name + ":" + score);
+        Log.i(TAG, "MyActivity1已启动，接收数据：" + name + ":" + score);
         tv.setText("MainActivity---->MyActivity1\n\n" + "传入数据-->" + name + ":" + score);
         bt1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {

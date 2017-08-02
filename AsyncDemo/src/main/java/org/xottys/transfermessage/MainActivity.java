@@ -87,6 +87,19 @@ public class MainActivity extends Activity {
         //Thread启动和消息传递，Thread除了可以用标准的变量传递方法
         //（详见VariableTransferDemo）外，还可以用下列2）3）两种方法：
         //1）Thread三种构造方法
+        bt1 = (Button) findViewById(R.id.bt1);
+        bt2 = (Button) findViewById(R.id.bt2);
+        bt3 = (Button) findViewById(R.id.bt3);
+        bt4 = (Button) findViewById(R.id.bt4);
+        bt1.setBackgroundColor(0xbd292f34);
+        bt1.setTextColor(0xFFFFFFFF);
+        bt2.setBackgroundColor(0xbd292f34);
+        bt2.setTextColor(0xFFFFFFFF);
+        bt3.setBackgroundColor(0xbd292f34);
+        bt3.setTextColor(0xFFFFFFFF);
+        bt4.setBackgroundColor(0xbd292f34);
+        bt4.setTextColor(0xFFFFFFFF);
+        tv = (TextView) findViewById(R.id.tv);
         //2）共享内存方式的数据传递，主要用Volatile修饰符（如本例中的stopFlag）
         //3）PipedOutputStream／PipedInputStream方式传递数据
         //4）Synchonized，wait／notify的简单用法

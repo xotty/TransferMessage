@@ -17,11 +17,10 @@ public class MyBindService extends Service {
     private float GDP;
     private boolean quit;
 
-    // 定义onBinder方法所返回的对象
+    //定义onBinder方法所返回的对象
     private MyBinder myBinder;
 
-    //Service第一次被绑定时回调该方法
-    //多次调用bindService()方法并不会导致多次创建服务及绑定(也就是说onCreate()和onBind()方法并不会被多次调用)
+    //Service第一次被绑定时会回调该方法且只会被回调一次，多次调用bindService()方法并不会导致多次回调该方法
     @Override
     public IBinder onBind(Intent intent) {
         myBinder = new MyBinder();  // 返回IBinder对象
@@ -33,7 +32,7 @@ public class MyBindService extends Service {
         return myBinder;
     }
 
-    //Service被创建时回调该方法。
+    //Service被创建时回调该方法，即第一次bindSrvice时才会回调该方法，整个生命周期中只会被回调一次
     @Override
     public void onCreate() {
         super.onCreate();
@@ -53,7 +52,7 @@ public class MyBindService extends Service {
         }.start();
     }
 
-    //Service被断开连接时回调该方法，通常是调用该Service的Activity退出时或unbindService()被显式调用时
+    //最后一个与Service连接的宿主与Service的断开时会调该方法，通常通过宿主Activity退出或显式调用unbindService()方法来启动
     @Override
     public boolean onUnbind(Intent intent) {
         Log.i(TAG, "MyBindService is Unbinded");
@@ -61,14 +60,14 @@ public class MyBindService extends Service {
         return true;   //onRebind()被调用的前提条件
     }
 
-    //如果服务一直在后台，调用bindService()时，onBind不会被调用而是调用onRebind()方法
+    //如果服务一直在后台（通常是用StartService启动后再Bind），将已经Bind的Service全部unBind后再次调用bindService()时，会回调本方法
     @Override
     public void onRebind(Intent intent) {
         Log.i(TAG, "MyBindService is Rebinded");
 
     }
 
-    // Service被关闭之前回调该方法。
+    //Service被关闭之前回调该方法。
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -78,6 +77,12 @@ public class MyBindService extends Service {
 
     // Service 要完成的任务通常放在这里
     public class MyBinder extends Binder {
+
+        //获取本Service的实例
+        public MyBindService getTcpService() {
+            return MyBindService.this;
+        }
+
         public String getCity() {
             return city;
         }
@@ -107,7 +112,9 @@ public class MyBindService extends Service {
             GDP = 1.93f;
         }
 
-
+        //可以用Service实例调用的方法
+        public void doAnotherThing() {
+            Log.i(TAG, "doAnotherThing");
+        }
     }
-
 }
