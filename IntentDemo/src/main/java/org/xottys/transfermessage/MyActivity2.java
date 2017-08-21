@@ -30,10 +30,11 @@ public class MyActivity2 extends Activity {
         bt2.setBackgroundColor(0xbd292f34);
         bt2.setTextColor(0xFFFFFFFF);
 
-        //获取和解析上级Activity的Intent传递过来的数据
+        //获取和解析上级Activity的Intent/Budle传递过来的数据
         Intent intent = getIntent();
-        String name = intent.getStringExtra("name");
-        float score = intent.getFloatExtra("score", -1f);
+        Bundle bundle = intent.getExtras();
+        String name = bundle.getString("name");
+        float score = bundle.getFloat("score", -1f);
         Log.i("IntentDemo", "MyActivity2收到MyActivity2传入的数据：" + name + ":" + score);
 
         tv.setText("MyActivity1---->MyActivity2\n\n" + "传入数据-->" + name + ":" + score);

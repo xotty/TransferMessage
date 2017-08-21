@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity {
     final private String TAG="IntentDemo";
-        MyBindService.MyBinder myBinder;
+    private MyBindService.MyBinder myBinder;
     private Button bt1, bt2, bt3;
     private TextView tv;
     private ServiceConnection conn = new ServiceConnection() {
@@ -96,19 +96,19 @@ public class MainActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(MainActivity.this, MyStartService.class);
 
-                if (bt2.getText().equals("Start Service")) {
+                if (bt2.getText().equals("Start\n Service")) {
                     Log.i(TAG, "MainActivity准备启动MyStartService");
-                    bt2.setText("Stop Service");
+                    bt2.setText("Stop\n Service");
                     intent.putExtra("city", "上海");
                     intent.putExtra("GDP", 2.67f);
                     //启动Service，该方法不能获取Service返回数据
                     startService(intent);
-                    tv.setText("MyService启动,详情请查看终端Log输出。");
+                    tv.setText("MyStartService启动,详情请查看终端Log输出。");
                 } else {
-                    bt2.setText("Start Service");
+                    bt2.setText("Start\n Service");
                     //停止Service
                     stopService(intent);
-                    tv.setText("MyService终止！");
+                    tv.setText("MyStartService终止！");
                 }
             }
         });
