@@ -15,7 +15,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="org.xottys.transfermessage.MyActivity1" />
+        <activity android:name="org.xottys.transfermessage.MyActivity" />
         <activity android:name="org.xottys.transfermessage.MyActivity2">
             <intent-filter>
                 <action android:name="MyActivity" />

@@ -1,1 +1,1 @@
-include ':HandlerDemo', ':UIUpdateDemo', ':VariableTransferDemo', ':CBOTransferDemo', ':IntentDemo', ':IPCDemo', ':IPCService', ':AsyncDemo'
+include ':HandlerDemo', ':UIUpdateDemo', ':VariableTransferDemo', ':CBOTransferDemo', ':IntentDemo', ':IPCDemo', ':IPCService', ':AsyncDemo', ':EventBusDemo'

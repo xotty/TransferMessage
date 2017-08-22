@@ -1,6 +1,7 @@
 /**
- * Description: 跨进程消息传递（IPC）演示，1）Messenger   2）AIDL   3）Activity跳转
- *                                     4）BroadcastReceiver   5）ContentProvider
+ * 跨进程消息传递（IPC）演示，1）Messenger   2）AIDL   3）Activity跳转
+ *                        4）BroadcastReceiver    5）ContentProvider
+ * 上述通信方式在本地进程中也都是可用的。
  * <br/>Copyright (C), 2017-2018, Steve Chang
  * <br/>This program is protected by copyright laws.
  * <br/>Program Name:IPCDemo MainActivity

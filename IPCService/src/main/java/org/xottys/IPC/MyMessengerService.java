@@ -1,5 +1,5 @@
 /**
- * Description: 用Messenger方式提供对外传递消息的服务
+ * 用Messenger方式提供对外传递消息的服务,Activity与Service通讯的方式之一，主要用于跨进程通讯
  * <br/>Copyright (C), 2017-2018, Steve Chang
  * <br/>This program is protected by copyright laws.
  * <br/>Program Name:MyMessengerService
