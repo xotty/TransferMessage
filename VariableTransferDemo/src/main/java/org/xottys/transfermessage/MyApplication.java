@@ -7,12 +7,11 @@ import android.app.Application;
  */
 
 public class MyApplication extends Application {
-
+    //用来传递的变量
+    String APP_PARA;
 
     //用于在普通类（非Activity、Service）中获得MyAppliction实例（系统单例）
-    private
-    static MyApplication myApplication;
-    String APP_PARA;     //用来传递的变量
+    private static MyApplication myApplication;
 
     public
     static MyApplication getMyApplication() {
