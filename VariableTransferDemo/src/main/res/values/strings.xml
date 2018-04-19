@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">VariableTransferDemo</string>
-    <string name="hello">Hello, Variable Transfer Demo Ready!</string>
+    <string name="app_name">VariableTransfer</string>
+    <string name="hello">Variable Transfer Demo Ready!</string>
 </resources>

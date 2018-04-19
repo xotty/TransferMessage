@@ -1,13 +1,11 @@
+/**
+ * 此类负责接收数据，然后将收到的数据赋值给MainActivity的静态变量以便UI线程显示
+ */
 package org.xottys.transfermessage;
 
-/**
- * 此类负责接收数据，然后传递给UI线程
- */
-
-@SuppressWarnings("ALL")
 class T2 {
     public String para2;
-    @SuppressWarnings("CanBeFinal")
+
     private String p;
     private String p2;
 
@@ -24,10 +22,10 @@ class T2 {
         this.p2 = p2;
     }
 
+
     public void m2_1()
 
     {
-
         //公共成员变量传值
         MainActivity.pString = para2;
         MainActivity.mHandler.sendEmptyMessage(1);
@@ -78,7 +76,7 @@ class T2 {
     }
 
     //延时3s
-    private void waitAmoment() {
+    public void waitAmoment() {
         try {
             Thread.sleep(3000);
         } catch (InterruptedException e) {

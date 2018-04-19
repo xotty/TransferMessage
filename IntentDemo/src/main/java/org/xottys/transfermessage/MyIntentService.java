@@ -1,3 +1,16 @@
+/**
+ * 单独handler thread线程来处理异步任务，不支持BindService，会自动退出（不需要显式退出）
+ * 多次启动IntentService时实例也只有一个，每次启动的任务都会进入消息队列中，直到全部任务完成才会自动终止
+ *
+ * <p>
+ * <br/>Copyright (C), 2017-2018, Steve Chang
+ * <br/>This program is protected by copyright laws.
+ * <br/>Program Name:Intent DEMO
+ * <br/>Date:June，2017
+ *
+ * @author xottys@163.com
+ * @version 1.0
+ */
 package org.xottys.transfermessage;
 
 import android.app.IntentService;
@@ -5,10 +18,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-/**
- * 单独handler thread线程来处理异步任务，不支持BindService，会自动退出（不需要显式退出）
- * 多次启动IntentService时实例也只有一个，每次启动的任务都会进入消息队列中，直到全部任务完成才会自动终止
- */
 public class MyIntentService extends IntentService {
     private static final String ACTION_FOO = "org.xottys.transfermessage.action.FOO";
     private static final String ACTION_BAZ = "org.xottys.transfermessage.action.BAZ";
@@ -66,12 +75,10 @@ public class MyIntentService extends IntentService {
     public void onDestroy() {
         super.onDestroy();
         Log.i(TAG, "{" + Thread.currentThread().getName() + "}onDestroy：MyIntentService Stoped！");
-
     }
 
 
     private void handleActionFoo(String param1, Float param2) {
-        // TODO: Handle action Foo
         throw new UnsupportedOperationException("Not yet implemented");
     }
 

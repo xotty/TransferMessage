@@ -1,3 +1,14 @@
+/**
+ * 仅用Start方法启动的Service,需要显式Stop才能停止
+ * <p>
+ * <br/>Copyright (C), 2017-2018, Steve Chang
+ * <br/>This program is protected by copyright laws.
+ * <br/>Program Name:Intent DEMO
+ * <br/>Date:June，2017
+ *
+ * @author xottys@163.com
+ * @version 1.0
+ */
 package org.xottys.transfermessage;
 
 import android.app.Service;
@@ -5,9 +16,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-/**
- * 仅用Start方法启动的Service,需要显式Stop才能停止
- */
 public class MyStartService extends Service {
 
     final private String TAG = "IntentDemo";

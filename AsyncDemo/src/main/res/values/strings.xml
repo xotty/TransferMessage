@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AsyncDemo</string>
-    <string name="mline">------------------------------------------------------------------</string>
+    <string name="app_name">Async</string>
+    <string name="mline">------------------------------------------------------------</string>
     <string name="title_activity_loader">LoaderActivity</string>
 </resources>

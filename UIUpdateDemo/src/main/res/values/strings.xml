@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">UIUpdateDemo</string>
+    <string name="app_name">UIUpdate</string>
     <string name="hello">Hello, UI Update Demo Ready!</string>
     <string name="waitting">等待子线程HandlerThread1处理.....</string>
 </resources>

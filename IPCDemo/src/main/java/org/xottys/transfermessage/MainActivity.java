@@ -1,11 +1,11 @@
 /**
- * 跨进程消息传递（IPC）演示，1）Messenger   2）AIDL   3）Activity跳转
+ * 跨进程消息传递（IPC）演示:1）Messenger   2）AIDL   3）Activity跳转
  *                        4）BroadcastReceiver    5）ContentProvider
  * 上述通信方式在本地进程中也都是可用的。
  * <br/>Copyright (C), 2017-2018, Steve Chang
  * <br/>This program is protected by copyright laws.
  * <br/>Program Name:IPCDemo MainActivity
- * <br/>Date:June，2017
+ * <br/>Date:June,2017
  *
  * @author xottys@163.com
  * @version 1.0
@@ -46,21 +46,21 @@ public class MainActivity extends Activity  {
     private static final int RECEIVE_MESSAGE_CODE = 0x0002;
     private static final String TAG = "IPCDemo";
 
-    static Activity instance;
-    private static Button bt1, bt2, bt3, bt4;
-    private static TextView tv;
+    private Button bt1, bt2, bt3, bt4;
+    private TextView tv;
 
     private ContentResolver contentResolver;
     private Uri uri = Uri.parse("content://org.xottys.IPC.MyProvider/");
 
-
     //serverMessenger内部指向了MyMessengerService的ServerHandler实例,可以向Server发送消息
     private Messenger serverMessenger = null;
-    //clientMessenger是客户端自身的Messenger，内部指向了ClientHandler的实例
-    //MyMessengeService可以通过Message的replyTo得到clientMessenger，从而Server端可以向客户端发送消息，
+    //clientMessenger是客户端自身的Messenger,内部指向了ClientHandler的实例
+    //MyMessengeService可以通过Message的replyTo得到clientMessenger,从而Server端可以向客户端发送消息,
     //并由ClientHandler接收并处理来自于Server的消息
-    private Messenger clientMessenger = new Messenger(new ClientHandler());
-    //MyAidlInterface的实例，用来调用其中的方法实现
+    Handler clientHandler=new ClientHandler();
+
+    private Messenger clientMessenger = new Messenger(clientHandler);
+    //MyAidlInterface的实例,用来调用其中的方法实现
     private MyAidlInterface remoteService;
     private ServiceConnection conn = new ServiceConnection() {
         @Override
@@ -76,12 +76,12 @@ public class MainActivity extends Activity  {
                 Message msg = Message.obtain();
                 msg.what = SEND_MESSAGE_CODE;
 
-                //此处跨进程Message通信不能将msg.obj设置为non-Parcelable的对象，应该使用Bundle
-                //msg.obj = "你好，MyService，我是客户端"，这样是不行的;
+                //此处跨进程Message通信不能将msg.obj设置为non-Parcelable的对象,应该使用Bundle
+                //msg.obj = "你好!MyService,我是客户端",这样是不行的;
                 Bundle data = new Bundle();
-                data.putString("msg", "你好！我是客户端。");
+                data.putString("msg", "你好!我是客户端.");
                 msg.setData(data);
-                //需要将Message的replyTo设置为客户端的clientMessenger，以便Server可以通过它向客户端发送消息
+                //需要将Message的replyTo设置为客户端的clientMessenger,以便Server可以通过它向客户端发送消息
                 msg.replyTo = clientMessenger;
 
                 try {
@@ -128,10 +128,6 @@ public class MainActivity extends Activity  {
         }
     };
 
-    static Activity getInstance() {
-        return instance;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,7 +147,11 @@ public class MainActivity extends Activity  {
         bt4.setBackgroundColor(0xbd292f34);
         bt4.setTextColor(0xFFFFFFFF);
         tv = (TextView) findViewById(R.id.tv);
-        instance = this;
+        IPCReceiver.textview=tv;
+
+        ((ClientHandler)clientHandler).textview=tv;
+
+//        instance = this;
 
         // 获取系统的ContentResolver对象
         contentResolver = getContentResolver();
@@ -163,7 +163,7 @@ public class MainActivity extends Activity  {
                     Log.i(TAG, "MainActivity准备启动MyMessengerService");
                     Intent intent = new Intent();
                     intent.setAction("action.Messenger_SERVICE");
-                    //隐式的Intent进行转化，从而可以用来启动的Service
+                    //隐式的Intent进行转化,从而可以用来启动的Service
                     PackageManager pm = getPackageManager();
                     ResolveInfo info = pm.resolveService(intent, 0);
                     if (info != null) {
@@ -210,7 +210,7 @@ public class MainActivity extends Activity  {
                     Log.i(TAG, "MainActivity准备启动MyAidlService");
                     Intent intent = new Intent();
                     intent.setAction("action.Aidl_SERVICE");
-                    //隐式的Intent进行转化，从而可以用来启动的Service
+                    //隐式的Intent进行转化,从而可以用来启动的Service
                     PackageManager pm = getPackageManager();
                     ResolveInfo info = pm.resolveService(intent, 0);
                     if (info != null) {
@@ -345,20 +345,24 @@ public class MainActivity extends Activity  {
     }
 
 
-    //接收和处理远程广播内容
+    //接收和处理远程广播内容,要完全避免内存泄漏需使用动态注册广播接收器
     public static class IPCReceiver extends BroadcastReceiver {
+        //从外部传来需要更新的内容
+        public static TextView textview;
         @Override
         public void onReceive(final Context content, final Intent intent) {
-
             String msg = intent.getStringExtra("msg");
-            Log.i(TAG, "收到远程广播内容：" + msg + tv.getText());
-            tv.setText("收到远程广播内容：" + msg);
+            Log.i(TAG, "收到远程广播内容：" + msg + textview.getText());
+            textview.setText("收到远程广播内容：" + msg);
         }
 
     }
 
     //Messenger客户端用ClientHandler接收并处理来自于Server的消息
-    private class ClientHandler extends Handler {
+    private static class ClientHandler extends Handler {
+        //需要更新的UI元素，从外部传进来
+        public TextView textview;
+
         @Override
         public void handleMessage(Message msg) {
             Log.i(TAG, "ClientHandler -> handleMessage");
@@ -367,8 +371,8 @@ public class MainActivity extends Activity  {
                 if (data != null) {
                     String str1 = data.getString("server");
                     String str2 = data.getString("client");
-                    tv.append("Server-->Client:" + str1 + "\n");
-                    tv.append("Server刚才收到Client发来的消息:" + str2 + "\n");
+                    textview.append("Server-->Client:" + str1 + "\n");
+                    textview.append("Server收到Client的消息:" + str2 + "\n");
                     Log.i(TAG, "客户端收到的消息MyMessengerService: " + str1 + str2);
                 }
             }

@@ -1,6 +1,4 @@
-/**
- * Description:
- * Callback的两种主要用法演示 1）与Callback设置同步定义回调方法   2）单独定义回调方法
+/**Callback的两种主要用法演示 1）与Callback设置同步定义回调方法   2）单独定义回调方法
  * BroadcastReceiver的两种主要用法演示  1）内部类接收消息   2）自定义外部类接收消息
  * Observer用法演示
  * <p>
@@ -48,7 +46,6 @@ public class MainActivity extends Activity implements CallbackInterface {
         tv = (TextView) findViewById(R.id.tv);
         bt.setBackgroundColor(0xbd292f34);
         bt.setTextColor(0xFFFFFFFF);
-
 
         bt.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -172,7 +169,8 @@ public class MainActivity extends Activity implements CallbackInterface {
     }
 
 
-    //内部类方式定义广播接收者，此时若用静态注册时（XML中注册），该接收者内部类必须是static的
+    //内部类方式定义广播接收者，此处演示的是动态注册；
+    //若改为静态注册（XML中注册），该类必须是static的
     class MyBroadcastReceiver1 extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {

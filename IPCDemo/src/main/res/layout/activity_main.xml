@@ -16,7 +16,7 @@
         <Button
             android:id="@+id/bt1"
             android:layout_width="150dp"
-            android:layout_height="80dp"
+            android:layout_height="wrap_content"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="50dp"
             android:gravity="center_horizontal"
@@ -28,8 +28,8 @@
         <Button
             android:id="@+id/bt2"
             android:layout_width="150dp"
-            android:layout_height="80dp"
-            android:layout_marginLeft="30dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="50dp"
             android:gravity="center_horizontal"
             android:text="Start\n AIDL"
@@ -47,7 +47,7 @@
             <Button
                 android:id="@+id/bt3"
                 android:layout_width="150dp"
-                android:layout_height="80dp"
+                android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="10dp"
                 android:text="Remote\n Activity"
@@ -58,8 +58,8 @@
             <Button
                 android:id="@+id/bt4"
                 android:layout_width="150dp"
-                android:layout_height="80dp"
-                android:layout_marginLeft="30dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
                 android:layout_marginTop="10dp"
                 android:text="Content\n Provider"
                 android:textAllCaps="false"
@@ -72,8 +72,8 @@
         android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="50dp"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 </LinearLayout>

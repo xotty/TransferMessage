@@ -1,3 +1,15 @@
+/**
+ * 显式启动的Activity，无返回数据
+ *
+ * <p>
+ * <br/>Copyright (C), 2017-2018, Steve Chang
+ * <br/>This program is protected by copyright laws.
+ * <br/>Program Name:Intent DEMO
+ * <br/>Date:June，2017
+ *
+ * @author xottys@163.com
+ * @version 1.0
+ */
 package org.xottys.transfermessage;
 
 import android.app.Activity;
@@ -8,24 +20,21 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-
-/**
- * 显式启动的Activity，无返回数据
- */
 public class MyActivity1 extends Activity {
-    final private String TAG = "IntentDemo";
-    private Button bt1, bt2;
+    private static final String TAG = "IntentDemo";
     private TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my1);
-        bt1 = (Button) findViewById(R.id.bt1);
-        bt2 = (Button) findViewById(R.id.bt2);
+        Button bt1 = (Button) findViewById(R.id.bt1);
+        Button bt2 = (Button) findViewById(R.id.bt2);
         tv = (TextView) findViewById(R.id.tv);
         bt1.setBackgroundColor(0xbd292f34);
         bt1.setTextColor(0xFFFFFFFF);
+        bt2.setBackgroundColor(0xbd292f34);
+        bt2.setTextColor(0xFFFFFFFF);
 
         //获取和解析 Intent携带的数据
         Intent intent = getIntent();
@@ -58,10 +67,13 @@ public class MyActivity1 extends Activity {
     @Override
     //接收和处理Activty的返回结果
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String name = data.getStringExtra("name");
-        float score = data.getFloatExtra("score", -1f);
-        tv.setText("MyActivity2---->MyActivity1" + "\n\n" + "返回数据-->" + name + ":" + score);
-        Log.i("IntentDemo", "MyActivity1收到MyActivity2返回的结果：" + name + ":" + score);
-        super.onActivityResult(requestCode, resultCode, data);
+       if (data!=null) {
+           String name = data.getStringExtra("name");
+           float score = data.getFloatExtra("score", -1f);
+           tv.setText("MyActivity2---->MyActivity1" + "\n\n" + "返回数据-->" + name + ":" + score);
+           Log.i("IntentDemo", "MyActivity1收到MyActivity2返回的结果：" + name + ":" + score);
+           super.onActivityResult(requestCode, resultCode, data);
+       }
     }
+
 }

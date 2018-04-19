@@ -1,6 +1,8 @@
 /**
- * Description:Intent的两种主要用途演示 1）Activity之间传递消息   2）Activity与Service之间传递消息
+ * Intent的两种主要用途演示
+ * 1）Activity之间传递消息   2）Activity与Service之间传递消息
  * Intent还可以在广播中（BroadcastReceiver）传递消息，详见CBOTransferDemo中相关内容
+ * <p>
  * <br/>Copyright (C), 2017-2018, Steve Chang
  * <br/>This program is protected by copyright laws.
  * <br/>Program Name:Intent DEMO
@@ -26,7 +28,6 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
     final private String TAG="IntentDemo";
     private MyBindService.MyBinder myBinder;
-    private Button bt1, bt2, bt3;
     private TextView tv;
     private ServiceConnection conn = new ServiceConnection() {
         //每个宿主与service第一次Bind成功时会回调该方法，同一宿主第二次及以后bind同一Sercice时不会再回调本方法，除非unBindService后再次Bind
@@ -63,9 +64,9 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bt1 = (Button) findViewById(R.id.bt1);
-        bt2 = (Button) findViewById(R.id.bt2);
-        bt3 = (Button) findViewById(R.id.bt3);
+        final Button bt1 = (Button) findViewById(R.id.bt1);
+        final Button bt2 = (Button) findViewById(R.id.bt2);
+        final Button bt3 = (Button) findViewById(R.id.bt3);
 
         bt1.setBackgroundColor(0xbd292f34);
         bt1.setTextColor(0xFFFFFFFF);
@@ -128,7 +129,6 @@ public class MainActivity extends Activity {
                     intent.putExtra("GDP", 2.00f);
                     // 绑定指定Serivce
                     bindService(intent, conn, Service.BIND_AUTO_CREATE);
-
 
                 } else {
                     bt3.setText("Bind\n Service");

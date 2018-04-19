@@ -1,3 +1,15 @@
+/**
+ * 仅用Bind方法启动的Service,随着Activity的停止而能停止
+ *
+ * <p>
+ * <br/>Copyright (C), 2017-2018, Steve Chang
+ * <br/>This program is protected by copyright laws.
+ * <br/>Program Name:Intent DEMO
+ * <br/>Date:June，2017
+ *
+ * @author xottys@163.com
+ * @version 1.0
+ */
 package org.xottys.transfermessage;
 
 import android.app.Service;
@@ -6,9 +18,6 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.util.Log;
 
-/**
- * 仅用Bind方法启动的Service,随着Activity的停止而能停止
- */
 public class MyBindService extends Service {
     final private String TAG = "IntentDemo";
 
@@ -17,13 +26,11 @@ public class MyBindService extends Service {
     private float GDP;
     private boolean quit;
 
-    //定义onBinder方法所返回的对象
-    private MyBinder myBinder;
-
     //Service第一次被绑定时会回调该方法且只会被回调一次，多次调用bindService()方法并不会导致多次回调该方法
     @Override
     public IBinder onBind(Intent intent) {
-        myBinder = new MyBinder();  // 返回IBinder对象
+        //定义onBinder方法所返回的对象
+        MyBinder myBinder = new MyBinder();
 
         city = intent.getStringExtra("city");
         GDP = intent.getFloatExtra("GDP", -1f);
@@ -45,6 +52,7 @@ public class MyBindService extends Service {
                     try {
                         Thread.sleep(1000);
                     } catch (InterruptedException e) {
+                        Log.e(TAG, e.getMessage());
                     }
                     count++;
                 }

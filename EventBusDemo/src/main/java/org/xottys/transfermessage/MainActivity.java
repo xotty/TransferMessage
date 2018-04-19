@@ -33,16 +33,15 @@ import org.greenrobot.eventbus.ThreadMode;
 public class MainActivity extends Activity {
     private static final String TAG = "EventBusDemo";
     public static Handler handler;
-    private Button bt1, bt2, bt3;
     private TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        bt1 = (Button) findViewById(R.id.bt1);
-        bt2 = (Button) findViewById(R.id.bt2);
-        bt3 = (Button) findViewById(R.id.bt3);
+        Button bt1 = (Button) findViewById(R.id.bt1);
+        Button bt2 = (Button) findViewById(R.id.bt2);
+        Button bt3 = (Button) findViewById(R.id.bt3);
 
         bt1.setBackgroundColor(0xbd292f34);
         bt1.setTextColor(0xFFFFFFFF);
@@ -81,8 +80,8 @@ public class MainActivity extends Activity {
             }
         });
 
-        //收到消息后统一显示
-        handler = new Handler() {
+        //收到消息后统一显示,会有内存泄漏
+        handler = new  Handler() {
             @Override
             public void handleMessage(Message msg) {
                 tv.append(msg.obj.toString() + "\n");

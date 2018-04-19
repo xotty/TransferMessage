@@ -29,6 +29,7 @@ import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -80,7 +81,6 @@ public class MainActivity extends Activity {
         tv = (TextView) findViewById(R.id.tv);
         progressBar = (ProgressBar) findViewById(R.id.progress_bar);
 
-
         // 获取系统的ContentResolver对象
         //contentResolver = getContentResolver();
 
@@ -130,7 +130,7 @@ public class MainActivity extends Activity {
                     myThread1.start();
                     myThread2.start();
 
-                    tv.setText("线程启动，开始执行");
+                    tv.setText("线程启动，开始执行\n");
                     bt1.setBackgroundColor(0xFFD7D7D7);
                     bt1.setTextColor(0xbd292f34);
 
@@ -263,9 +263,9 @@ public class MainActivity extends Activity {
                     }
 
                     //继续做其它任务
-                    Log.i(TAG, "任务开始于" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()));
+                    Log.i(TAG, "任务开始于" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date()));
                     bt3.setText("CANCEL");
-                    tv.setText("ExectorService.submit(myCallable)任务开始于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "\n");
+                    tv.setText("ExectorService.submit(myCallable)任务开始于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date()) + "\n");
 
                     new Thread() {
                         @Override
@@ -273,32 +273,32 @@ public class MainActivity extends Activity {
                             //获取线程运行结果，该部分代码会被阻塞，直到异步线程返回结果或被意外终止
                             try {
                                 mSum = myFuture.get(10000, TimeUnit.MILLISECONDS);
-                                Log.i(TAG, currentThread().getName() + "任务结束于" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "result=" + mSum);
+                                Log.i(TAG, currentThread().getName() + "任务结束于" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date()) + "result=" + mSum);
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        tv.append("ExectorService.submit(myCallable)任务完成于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "---result=" + mSum + "\n");
+                                        tv.append("ExectorService.submit(myCallable)任务完成于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date()) + "---result=" + mSum + "\n");
                                     }
                                 });
 
                             } catch (InterruptedException e) {
-                                Log.e(TAG, currentThread().getName() + "任务终止于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()));
+                                Log.e(TAG, currentThread().getName() + "任务终止于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss", Locale.getDefault()).format(new Date()));
 
                             } catch (CancellationException e) {
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
                                         bt3.setText("NEXT");
-                                        tv.append("ExectorService.submit(myCallable)任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()) + "---result=" + mSum + "\n");
+                                        tv.append("ExectorService.submit(myCallable)任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss", Locale.getDefault()).format(new Date()) + "---result=" + mSum + "\n");
                                     }
                                 });
-                                Log.e(TAG, currentThread().getName() + "任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()) + "---result=" + mSum);
+                                Log.e(TAG, currentThread().getName() + "任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss", Locale.getDefault()).format(new Date()) + "---result=" + mSum);
 
                             } catch (TimeoutException e) {
                                 Log.e(TAG, "TAG, currentThread().getName()" + "获取结果超时。");
 
                             } catch (Exception e) {
-                                Log.e(TAG, currentThread().getName() + "出现意外错误于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()));
+                                Log.e(TAG, currentThread().getName() + "出现意外错误于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss", Locale.getDefault()).format(new Date()));
                                 e.printStackTrace();
                             }
 
@@ -319,12 +319,12 @@ public class MainActivity extends Activity {
                         protected void done() {
                             try {
                                 mSum = (Integer) myFutureTask.get();
-                                Log.i(TAG, currentThread().getName() + "任务完成于" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "result=" + mSum);
+                                Log.i(TAG, currentThread().getName() + "任务完成于" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date()) + "result=" + mSum);
                                 bt3.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         bt3.setText("Start\n Executor");
-                                        tv.append("ExectorService.excute(myFutureTask)任务完成于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "--result=" + mSum + "\n");
+                                        tv.append("ExectorService.excute(myFutureTask)任务完成于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date()) + "--result=" + mSum + "\n");
                                         bt1.setTextColor(0xFFFFFFFF);
                                         bt2.setTextColor(0xFFFFFFFF);
                                         bt4.setTextColor(0xFFFFFFFF);
@@ -334,15 +334,15 @@ public class MainActivity extends Activity {
                                     }
                                 });
                             } catch (InterruptedException e) {
-                                Log.e(TAG, currentThread().getName() + "任务终止于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()));
+                                Log.e(TAG, currentThread().getName() + "任务终止于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss", Locale.getDefault()).format(new Date()));
 
                             } catch (CancellationException e) {
-                                Log.e(TAG, currentThread().getName() + "任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()) + "--result=" + mSum);
+                                Log.e(TAG, currentThread().getName() + "任务取消于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss", Locale.getDefault()).format(new Date()) + "--result=" + mSum);
                                 bt3.post(new Runnable() {
                                     @Override
                                     public void run() {
                                         bt3.setText("Start\n Executor");
-                                        tv.append("ExectorService.excute(myFutureTask)任务取消于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "--result=" + mSum + "\n");
+                                        tv.append("ExectorService.excute(myFutureTask)任务取消于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date()) + "--result=" + mSum + "\n");
                                         bt1.setTextColor(0xFFFFFFFF);
                                         bt2.setTextColor(0xFFFFFFFF);
                                         bt4.setTextColor(0xFFFFFFFF);
@@ -353,7 +353,7 @@ public class MainActivity extends Activity {
                                 });
 
                             } catch (Exception e) {
-                                Log.e(TAG, currentThread().getName() + "出现意外错误于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss").format(new Date()));
+                                Log.e(TAG, currentThread().getName() + "出现意外错误于" + new SimpleDateFormat("yyyy/MM/dH:mm:ss", Locale.getDefault()).format(new Date()));
                                 e.printStackTrace();
                             }
                         }
@@ -370,7 +370,7 @@ public class MainActivity extends Activity {
 
                     bt3.setText("Cancel");
                     tv.append(getResources().getString(R.string.mline) + "\n");
-                    tv.append("ExectorService.excute(myFutureTask)任务开始于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(new Date()) + "\n");
+                    tv.append("ExectorService.excute(myFutureTask)任务开始于：" + new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.getDefault()).format(new Date()) + "\n");
                 } else if (bt3.getText().equals("CANCEL")) {
                     myFuture.cancel(true);
                 } else if (bt3.getText().equals("Cancel")) {
@@ -426,7 +426,7 @@ public class MainActivity extends Activity {
 
     //模拟任务，从1加到100，并逐行打印
     //参数name用来区别是否需要加wait／notify和进行UI更新机制
-    private int doSomething(String name) {
+    private  int doSomething(String name) {
         //全程锁，演示两个线程分别调用它时实际是分先后执行的
         synchronized (lock) {
             int sum = 0;
@@ -490,12 +490,10 @@ public class MainActivity extends Activity {
                 try {
                     outStream.close();
                     Log.i(TAG, "PipedOutputSream Cloesd ");
-                } catch (
-                        IOException e) {
-
+                } catch (IOException e) {
+                    Log.e(TAG, e.toString());
                 }
             }
-
             return sum;
         }
     }

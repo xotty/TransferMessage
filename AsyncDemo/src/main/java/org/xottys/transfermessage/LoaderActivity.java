@@ -6,7 +6,7 @@
  * <p>
  * <br/>Copyright (C), 2017-2018, Steve Chang
  * <br/>This program is protected by copyright laws.
- * <br/>Program Name:AsyncDEMO
+ * <br/>Program Name:LoaderActivity
  * <br/>Date:June，2017
  *
  * @author xottys@163.com
@@ -14,6 +14,7 @@
  */
 package org.xottys.transfermessage;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.AsyncQueryHandler;
@@ -22,10 +23,13 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -47,22 +51,37 @@ public class LoaderActivity extends Activity {
     static final Uri uri = ContactsContract.Contacts.CONTENT_URI;
     MyQueryHandler myQueryHandler;
     private Button bt1, bt2;
-    private ListView listview;
     private TextView tv;
+    private int requestCode=1;
     // 这是用于显示列表数据的Adapter
     private ArrayAdapter<String> adapter;
+    private Boolean grantResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loader);
+
+        //动态检查和申请读写通讯录的权限
+        String permission[]=new String[]{
+                Manifest.permission.READ_CONTACTS,
+                Manifest.permission.WRITE_CONTACTS};
+        if (checkSelfPermission(permission[0])==PackageManager.PERMISSION_GRANTED &&
+            checkSelfPermission(permission[1])==PackageManager.PERMISSION_GRANTED) {
+            grantResult = true;
+        }
+        else{
+            grantResult=false;
+            requestPermissions(permission, requestCode);
+        }
+
         bt1 = (Button) findViewById(R.id.bt1);
         bt2 = (Button) findViewById(R.id.bt2);
 
-        listview = (ListView) findViewById(R.id.lv);
+        ListView listview = (ListView) findViewById(R.id.lv);
         tv = (TextView) findViewById(R.id.tv);
 
-        adapter = new ArrayAdapter<String>
+        adapter = new ArrayAdapter<>
                 (LoaderActivity.this, R.layout.array_item, new ArrayList<String>());
         listview.setAdapter(adapter);
 
@@ -71,12 +90,6 @@ public class LoaderActivity extends Activity {
         bt2.setBackgroundColor(0xbd292f34);
         bt2.setTextColor(0xFFFFFFFF);
 
-        //初始化Loader,指定Callback所在的类
-        Bundle bd = new Bundle();
-        bd.putString("Para1", "Name");
-        bd.putInt("Para2", 2);
-        getLoaderManager().initLoader(0, bd, new DataLoaderCallback());
-        Log.i(TAG, "Init Loader......");
         //返回上一级
         bt1.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -97,6 +110,8 @@ public class LoaderActivity extends Activity {
                     adapter.notifyDataSetChanged();
                     //给通讯录添加1条新数据，
                     myQueryHandler = new MyQueryHandler(getContentResolver());
+                    myQueryHandler.adapter=adapter;
+                    myQueryHandler.tv=tv;
                     ContentValues values = new ContentValues();
                     Uri rawContactUri = Uri.parse("content://com.android.contacts/raw_contacts");
                     long rawContactId = ContentUris.parseId(getContentResolver().insert(rawContactUri, values));
@@ -144,7 +159,19 @@ public class LoaderActivity extends Activity {
             }
         });
     }
-
+    //Activity启动或再启动时回调
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (grantResult){
+        //初始化Loader,指定Callback所在的类
+        Bundle bd = new Bundle();
+        bd.putString("Para1", "Name");
+        bd.putInt("Para2", 2);
+        getLoaderManager().initLoader(0, bd, new DataLoaderCallback());
+        Log.i(TAG, "Init Loader......");
+        }
+    }
     // LoaderCallbacks
     private class DataLoaderCallback implements LoaderManager.LoaderCallbacks<Cursor> {
         @Override
@@ -195,7 +222,9 @@ public class LoaderActivity extends Activity {
     }
 
     //通过内部封装的Handler，借助ContentProvider来异步操作数据库，提供CRUD四种操作及其每种操作完成后的结果回调
-    private class MyQueryHandler extends AsyncQueryHandler {
+    private static class MyQueryHandler extends AsyncQueryHandler {
+        public TextView tv;
+        public ArrayAdapter adapter;
         public MyQueryHandler(ContentResolver contentResolver) {
             super(contentResolver);
         }
@@ -220,7 +249,7 @@ public class LoaderActivity extends Activity {
         @Override
         protected void onInsertComplete(int token, Object cookie, Uri uri) {
 
-            myQueryHandler.startQuery(0, null, uri, CONTACTS_SUMMARY_PROJECTION, null, null, null);
+            this.startQuery(0, null, uri, CONTACTS_SUMMARY_PROJECTION, null, null, null);
             Log.i(TAG, "onInsertComplete, 新增一条记录:Steve Chang.");
             tv.append("新增一条记录:Steve Chang.\n");
 
@@ -230,7 +259,7 @@ public class LoaderActivity extends Activity {
         @Override
         protected void onUpdateComplete(int token, Object cookie, int result) {
 
-            myQueryHandler.startQuery(0, null, uri, CONTACTS_SUMMARY_PROJECTION, null, null, null);
+            this.startQuery(0, null, uri, CONTACTS_SUMMARY_PROJECTION, null, null, null);
             tv.append("修改：Steve Chang->Mercy Zhang.\n");
             Log.i(TAG, "onUpdateComplete,修改一条记录.");
 
@@ -242,15 +271,46 @@ public class LoaderActivity extends Activity {
             if (token == 4) {
                 Uri uri = Uri.parse("content://com.android.contacts/data");
                 String whereClause = "mimetype=? and Data.DATA1 =?";
-                myQueryHandler.startDelete(5, null, uri, whereClause, new String[]{"vnd.android.cursor.item/name", "Mercy Zhang"});
+                this.startDelete(5, null, uri, whereClause, new String[]{"vnd.android.cursor.item/name", "Mercy Zhang"});
             } else if (token == 5)
 
             {
-                myQueryHandler.startQuery(0, null, uri, CONTACTS_SUMMARY_PROJECTION, null, null, null);
+                this.startQuery(0, null, uri, CONTACTS_SUMMARY_PROJECTION, null, null, null);
 
                 tv.append("删除:Mercy Zhang.\n");
                 Log.i(TAG, "onDeleteComplete,删除一条记录.");
             }
         }
     }
+
+    @Override
+    public void onRequestPermissionsResult(final int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        grantResult=true;
+        if (requestCode==this.requestCode  && grantResults.length>0){
+
+            for (int gr:grantResults) {
+             if (gr==PackageManager.PERMISSION_DENIED)
+                 grantResult=false;
+                 break;
+            }
+
+        }
+        if (grantResult){
+            //初始化Loader,指定Callback所在的类
+            Bundle bd = new Bundle();
+            bd.putString("Para1", "Name");
+            bd.putInt("Para2", 2);
+            getLoaderManager().initLoader(0, bd, new DataLoaderCallback());
+            Log.i(TAG, "Init Loader......");
+        }
+        else
+        {
+            tv.setText("无读写通信录权限,不能进一步操作!");
+            tv.setTextColor(Color.RED);
+            bt2.setEnabled(false);
+            bt2.setTextColor(0xFFA0A0A0);
+        }
+    }
+
 }

@@ -23,12 +23,12 @@ import android.util.Log;
 
 //对AIDL进行了封装，service收到的请求是放在Handler的MessageQueue里面，只能发送消息，不能处理多线程并发请求,
 public class MyMessengerService extends Service {
+    private static final String TAG = "MyMessengerService";
     private static final int RECEIVE_MESSAGE_CODE = 0x0001;
     private static final int SEND_MESSAGE_CODE = 0x0002;
-    final private String TAG = "IPCDemo";
     //clientMessenger表示的是客户端的Messenger，可以通过来自于客户端的Message的replyTo属性获得，
     //其内部指向了客户端的ClientHandler实例，可以用clientMessenger向客户端发送消息
-    private Messenger clientMessenger = null;
+    private static Messenger clientMessenger = null;
 
     //serverMessenger是自身的Messenger，其内部指向了ServerHandler的实例
     //客户端可以通过IBinder构建Server端的Messenger，从而向Server发送消息，
@@ -57,7 +57,7 @@ public class MyMessengerService extends Service {
     }
 
     //用ServerHandler接收并处理来自于客户端的消息
-    private class ServerHandler extends Handler {
+    private static class ServerHandler extends Handler {
         @Override
         public void handleMessage(Message msg) {
             Log.i(TAG, "ServereHandler -> handleMessage");
@@ -77,7 +77,8 @@ public class MyMessengerService extends Service {
                     //通过Message-Bundle封装要发送的信息
                     Bundle bundle = new Bundle();
                     bundle.putString("server", "你好!客户端，我是Server.");
-                    bundle.putString("client", data.getString("msg"));
+                    if (data != null)
+                        bundle.putString("client", data.getString("msg"));
                     msgToClient.setData(bundle);
                     Log.i(TAG, "MyMessengerService向客户端回信:" + bundle.getString("server"));
                     try {

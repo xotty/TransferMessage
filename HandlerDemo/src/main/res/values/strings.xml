@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">Handler Demo</string>
+	<string name="app_name">Handler</string>
 	<string name="hello">Hello, Handler Demo Ready!</string>
 	<string name="waitting">主线程调用子线程，等待Thread1处理.....</string>
 

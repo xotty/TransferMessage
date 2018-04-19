@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/AsyncDemo/AsyncDemo.iml" filepath="$PROJECT_DIR$/AsyncDemo/AsyncDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/CBOTransferDemo/CBOTransferDemo.iml" filepath="$PROJECT_DIR$/CBOTransferDemo/CBOTransferDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/EventBusDemo/EventBusDemo.iml" filepath="$PROJECT_DIR$/EventBusDemo/EventBusDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/HandlerDemo/HandlerDemo.iml" filepath="$PROJECT_DIR$/HandlerDemo/HandlerDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IPCDemo/IPCDemo.iml" filepath="$PROJECT_DIR$/IPCDemo/IPCDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IPCService/IPCService.iml" filepath="$PROJECT_DIR$/IPCService/IPCService.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IntentDemo/IntentDemo.iml" filepath="$PROJECT_DIR$/IntentDemo/IntentDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/TransferMessage.iml" filepath="$PROJECT_DIR$/.idea/TransferMessage.iml" />
+      <module fileurl="file://$PROJECT_DIR$/UIUpdateDemo/UIUpdateDemo.iml" filepath="$PROJECT_DIR$/UIUpdateDemo/UIUpdateDemo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/VariableTransferDemo/VariableTransferDemo.iml" filepath="$PROJECT_DIR$/VariableTransferDemo/VariableTransferDemo.iml" />
+    </modules>
+  </component>
+</project>

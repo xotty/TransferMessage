@@ -9,21 +9,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import static android.content.ContentValues.TAG;
-
 public class MainActivity extends Activity {
-    private Button bt1, bt2;
+    private static final String TAG = "IPC";
     private TextView tvx;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        bt1 = (Button) findViewById(R.id.bt1);
-        bt2 = (Button) findViewById(R.id.bt2);
+        Button bt1 = (Button) findViewById(R.id.bt1);
+        Button bt2 = (Button) findViewById(R.id.bt2);
         tvx = (TextView) findViewById(R.id.tv);
-        bt1.setBackgroundColor(0xbd292f34);
-        bt1.setTextColor(0xFFFFFFFF);
 
         Log.i(TAG, "IPC MainActivity已启动");
 
@@ -41,6 +37,7 @@ public class MainActivity extends Activity {
                 finish();
             }
         });
+
         //发送跨进程广播
         bt2.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
@@ -55,7 +52,7 @@ public class MainActivity extends Activity {
                 sendBroadcast(intent);
 
                 Log.i(TAG, "IPC 发送广播："+bundle.getString("msg"));
-                tvx.setText("IPC 发送广播："+bundle.getString("msg"));
+                tvx.setText("IPC 发送广播:"+bundle.getString("msg"));
                 new Handler().postDelayed(new Runnable() {
 
                     public void run() {
@@ -66,10 +63,8 @@ public class MainActivity extends Activity {
 
                 }, 2000);
 
-
             }
         });
     }
-
 }
 

@@ -1,5 +1,5 @@
-/**
- * MyAidlInterface.aidl的实现文件，向外提供AIDL文件中声明的方法服务，Activity与Service通讯的方式之一，主要用于跨进程通讯
+/**MyAidlInterface.aidl的实现文件，向外提供AIDL文件中声明的方法服务，Activity与Service通讯的方式之一，主要用于跨进程通讯
+ *
  * <br/>Copyright (C), 2017-2018, Steve Chang
  * <br/>This program is protected by copyright laws.
  * <br/>Program Name:MyAidlService

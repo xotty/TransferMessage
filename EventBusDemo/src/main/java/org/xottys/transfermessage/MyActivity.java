@@ -26,15 +26,14 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class MyActivity extends Activity {
     private static final String TAG = "EventBusDemo";
-    private Button bt1, bt2;
     private TextView tv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.my_activity);
-        bt1 = (Button) findViewById(R.id.bt1);
-        bt2 = (Button) findViewById(R.id.bt2);
+        Button bt1 = (Button) findViewById(R.id.bt1);
+        Button bt2 = (Button) findViewById(R.id.bt2);
         tv = (TextView) findViewById(R.id.tv);
 
         bt1.setOnClickListener(new Button.OnClickListener() {
