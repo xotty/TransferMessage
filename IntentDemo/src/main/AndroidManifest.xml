@@ -8,18 +8,20 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
-        <activity android:name="org.xottys.transfermessage.MainActivity">
+        <activity android:name="org.xottys.transfermessage.MainActivity"
+            android:label="MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="org.xottys.transfermessage.MyActivity1" />
-        <activity android:name="org.xottys.transfermessage.MyActivity2">
+        <activity android:name="org.xottys.transfermessage.MyActivity1"
+            android:label="MyActivity1"/>
+        <activity android:name="org.xottys.transfermessage.MyActivity2"
+            android:label="MyActivity2">
             <intent-filter>
                 <action android:name="MyActivity" />
-
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

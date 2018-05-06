@@ -5,20 +5,18 @@
     android:background="#FFFFFFFF"
     android:orientation="vertical"
     android:weightSum="1">
-
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="#FFFFFFFF"
         android:orientation="horizontal"
-        android:layout_gravity="center_horizontal">
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp">
 
         <Button
             android:id="@+id/bt1"
-            android:layout_width="105dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="50dp"
             android:gravity="center_horizontal"
             android:text="Start\n Activity"
             android:textAllCaps="false"
@@ -27,35 +25,50 @@
 
         <Button
             android:id="@+id/bt2"
-            android:layout_width="105dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="50dp"
+            android:layout_marginStart="30dp"
             android:gravity="center_horizontal"
             android:text="Start\n Service"
             android:textAllCaps="false"
             android:textSize="24sp"
             android:visibility="visible" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="#FFFFFFFF"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="10dp">
 
         <Button
             android:id="@+id/bt3"
-            android:layout_width="105dp"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="50dp"
             android:gravity="center_horizontal"
             android:text="Bind\n Service"
             android:textAllCaps="false"
             android:textSize="24sp"
             android:visibility="visible" />
-    </LinearLayout>
+        <Button
+            android:id="@+id/bt4"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:gravity="center_horizontal"
+            android:text="Rebind\n Start"
+            android:textAllCaps="false"
+            android:textSize="24sp"
+            android:visibility="visible" />
 
+    </LinearLayout>
     <TextView
         android:id="@+id/tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
         android:layout_marginTop="50dp"
         android:textColor="#000000"
-        android:textSize="20sp" />
+        android:textSize="16sp" />
 </LinearLayout>
