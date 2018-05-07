@@ -108,7 +108,7 @@ public class HandlerDemo extends Activity {
         handlerThread.start();
 
         //主线程Handler
-        mainHandler = new MainHandler(this,tv, bt, handlerThread);
+        mainHandler = new MainHandler(this);
 
         threadHandler2 = new Handler(handlerThread.getLooper()) {
             @Override
@@ -246,47 +246,41 @@ public class HandlerDemo extends Activity {
 
     //使用内部静态类Handler以避免内存泄漏
     private  static  class MainHandler extends Handler {
-        //持有弱引用HandlerActivity,GC回收时会被回收掉.
-        private final WeakReference<Activity> mActivty;
-        private TextView tv;
-        private Button bt;
-        private HandlerThread handlerThread;
+        //持有弱引用HandlerDemo Activity,GC回收时会被回收掉.
+         WeakReference<HandlerDemo> mActivty;
 
-        private MainHandler(Activity activity, TextView textView, Button button, HandlerThread thread) {
+        private MainHandler(HandlerDemo activity) {
             mActivty = new WeakReference<>(activity);
-            tv = textView;
-            bt = button;
-            handlerThread = thread;
         }
 
         @Override
         public void handleMessage(Message msg) {
 
-            Activity activity = mActivty.get();
+            HandlerDemo handlerDemo =  mActivty.get();
             super.handleMessage(msg);
-            if (activity != null) {
+            if (handlerDemo != null) {
 
                 if (msg.what == 1)
-                    tv.setText(msg.obj.toString());
+                    handlerDemo.tv.setText(msg.obj.toString());
                 else
-                    tv.append(msg.obj.toString());
+                    handlerDemo.tv.append(msg.obj.toString());
 
                 Log.i("HandlerDemo", Thread.currentThread().getName() + "收到消息---" + msg.obj);
                 switch (msg.what) {
                     case 2: {
-                        bt.setText("NEXT-1");
-                        bt.setEnabled(true);
+                        handlerDemo.bt.setText("NEXT-1");
+                        handlerDemo.bt.setEnabled(true);
                     }
                     break;
                     case 3: {
-                        bt.setText("NEXT-2");
-                        bt.setEnabled(true);
+                        handlerDemo.bt.setText("NEXT-2");
+                        handlerDemo.bt.setEnabled(true);
                     }
                     break;
                     case 4: {
-                        handlerThread.quit();
-                        bt.setText("END");
-                        bt.setEnabled(true);
+                        handlerDemo.handlerThread.quit();
+                        handlerDemo.bt.setText("END");
+                        handlerDemo.bt.setEnabled(true);
                     }
 
                 }
