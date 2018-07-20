@@ -4,9 +4,9 @@
  * 1)onCreate
  * 2)onBind
  * 3)onServiceConnected
- * onServiceConnected
- * .......
- * 4)onUnBind(全部绑定解除时才调用，宿主销毁会自动解除绑定)
+ *   onServiceConnected
+ *   .......
+ * 4)onUnBind(全部绑定解除时才调用，全部宿主销毁会自动解除绑定)
  * 5)onDestroy
  * <p>
  * <br/>Copyright (C), 2017-2018, Steve Chang

@@ -100,6 +100,8 @@ public class MainActivity extends Activity {
                     bt.setEnabled(true);
                 }
 
+                T1 t22=new T1();
+                t22.m2();
             }
         }
     }

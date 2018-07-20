@@ -68,7 +68,7 @@ public class MyActivity2 extends Activity {
                 intent.putExtra("name", "王五");
                 intent.putExtra("score", 70.5f);
                 //返回数据封装完成
-                setResult(1, intent);
+                setResult(RESULT_OK, intent);
 
                 Log.i(TAG, "MyActivity2准备返回MyActivity1");
 

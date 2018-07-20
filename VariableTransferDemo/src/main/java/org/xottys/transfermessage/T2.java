@@ -3,6 +3,8 @@
  */
 package org.xottys.transfermessage;
 
+import android.util.Log;
+
 class T2 {
     public String para2;
 
@@ -74,7 +76,9 @@ class T2 {
         MainActivity.pString = Singleton.getInstance().S_VAR;
         MainActivity.mHandler.sendEmptyMessage(8);
     }
-
+    public void m3(){
+        Log.i("GT", "m3: "+T1.static_para);
+    }
     //延时3s
     public void waitAmoment() {
         try {

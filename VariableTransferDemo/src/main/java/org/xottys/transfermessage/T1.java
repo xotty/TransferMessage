@@ -3,6 +3,9 @@
  */
 
 package org.xottys.transfermessage;
+
+import android.util.Log;
+
 class T1 {
 
     public static String static_para;
@@ -31,6 +34,8 @@ class T1 {
         //启动数据传递
         t2.m2_3();
     }
-
+    public void m2() {
+        Log.i("GT", "m2: "+static_para);
+    }
 
 }

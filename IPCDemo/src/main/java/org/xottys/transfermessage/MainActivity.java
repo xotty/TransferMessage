@@ -1,5 +1,5 @@
 /**
- * 跨进程消息传递（IPC）演示:1）Messenger   2）AIDL   3）Activity跳转
+ * 跨进程消息传递（IPC）演示: 1）Messenger   2）AIDL   3）Activity跳转
  *                        4）BroadcastReceiver    5）ContentProvider
  * 上述通信方式在本地进程中也都是可用的。
  * <br/>Copyright (C), 2017-2018, Steve Chang
@@ -45,13 +45,11 @@ public class MainActivity extends Activity  {
     private static final int SEND_MESSAGE_CODE = 0x0001;
     private static final int RECEIVE_MESSAGE_CODE = 0x0002;
     private static final String TAG = "IPCDemo";
-
     private Button bt1, bt2, bt3, bt4;
     private TextView tv;
 
     private ContentResolver contentResolver;
     private Uri uri = Uri.parse("content://org.xottys.IPC.MyProvider/");
-
     //serverMessenger内部指向了MyMessengerService的ServerHandler实例,可以向Server发送消息
     private Messenger serverMessenger = null;
     //clientMessenger是客户端自身的Messenger,内部指向了ClientHandler的实例
@@ -68,7 +66,6 @@ public class MainActivity extends Activity  {
             //客户端与Service建立连接
             Log.i(TAG, "客户端onServiceConnected");
             //Messenger方式演示
-
             if (name.getClassName().contains("MyMessengerService")) {
                 tv.setText("MyMessengerService已启动......\n\n");
                 //通过从MyMessengerService的onBind方法中返回的IBinder初始化了一个指向Server端的Messenger
